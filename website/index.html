@@ -60,67 +60,77 @@
             background: radial-gradient(circle at 65% 30%, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.005) 50%, transparent 80%);
         }
 
-        /* Card interactive slots & smooth transitions */
+        /* Card interactive slots & GPU hardware acceleration */
         .card-interactive {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 86%;
             border-radius: 1rem;
             overflow: hidden;
             cursor: pointer;
             user-select: none;
-            transition: all 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, box-shadow, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.52s cubic-bezier(0.2, 0.8, 0.25, 1),
+                        box-shadow 0.52s cubic-bezier(0.2, 0.8, 0.25, 1),
+                        opacity 0.4s ease;
         }
 
-        /* Front Slot: Bottom-Left */
-        .card-slot-front {
-            bottom: 0.5rem;
-            left: 0;
-            width: 84%;
-            transform: translate3d(-8px, 24px, 20px) rotate(-2deg);
-            z-index: 25;
-            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.08);
-            opacity: 1;
-        }
         @media (min-width: 640px) {
-            .card-slot-front {
-                left: 0.5rem;
+            .card-interactive {
                 width: 80%;
             }
         }
         @media (min-width: 1024px) {
-            .card-slot-front {
-                left: 0;
+            .card-interactive {
                 width: 82%;
             }
         }
+
+        /* Front Slot: Bottom-Left (Smooth GPU Translate) */
+        .card-slot-front {
+            z-index: 25;
+            opacity: 1;
+            transform: translate3d(calc(-50% - 40px), calc(-50% + 35px), 25px) rotate(-2deg);
+            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.08);
+        }
+        @media (min-width: 640px) {
+            .card-slot-front {
+                transform: translate3d(calc(-50% - 60px), calc(-50% + 45px), 25px) rotate(-2deg);
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-slot-front {
+                transform: translate3d(calc(-50% - 70px), calc(-50% + 50px), 25px) rotate(-2deg);
+            }
+        }
         .card-slot-front:hover {
-            transform: translate3d(-12px, 18px, 25px) rotate(-1deg) scale(1.015);
+            transform: translate3d(calc(-50% - 72px), calc(-50% + 46px), 35px) rotate(-1deg) scale(1.015);
             box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.12);
         }
 
-        /* Back Slot: Top-Right (Wide spacing maintained) */
+        /* Back Slot: Top-Right (Smooth GPU Translate with Wide Spacing) */
         .card-slot-back {
-            top: 0;
-            right: 0;
-            width: 82%;
-            transform: translate3d(16px, -16px, -20px) rotate(3.5deg);
             z-index: 10;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
             opacity: 0.95;
+            transform: translate3d(calc(-50% + 40px), calc(-50% - 35px), -20px) rotate(3.6deg);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
         @media (min-width: 640px) {
             .card-slot-back {
-                right: 1rem;
-                width: 78%;
+                transform: translate3d(calc(-50% + 60px), calc(-50% - 45px), -20px) rotate(3.6deg);
             }
         }
         @media (min-width: 1024px) {
             .card-slot-back {
-                right: 0.5rem;
-                width: 80%;
+                transform: translate3d(calc(-50% + 72px), calc(-50% - 50px), -20px) rotate(3.6deg);
             }
         }
         .card-slot-back:hover {
-            transform: translate3d(20px, -22px, 0px) rotate(3deg) scale(1.02);
+            transform: translate3d(calc(-50% + 74px), calc(-50% - 54px), -10px) rotate(3deg) scale(1.015);
             box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.18);
             opacity: 1;
         }
@@ -365,7 +375,10 @@
             if (!cardWhite || !cardDark || !btnWhite || !btnDark) return;
 
             if (mode === 'white') {
-                // White moves to Front Slot (bottom-left), Dark moves to Back Slot (top-right)
+                // Instantly promote White card to top layer for smooth glide
+                cardWhite.style.zIndex = '30';
+                cardDark.style.zIndex = '10';
+
                 cardWhite.classList.remove('card-slot-back');
                 cardWhite.classList.add('card-slot-front');
 
@@ -375,7 +388,10 @@
                 btnWhite.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer';
                 btnDark.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer';
             } else {
-                // Dark moves to Front Slot (bottom-left), White moves to Back Slot (top-right)
+                // Instantly promote Dark card to top layer for smooth glide
+                cardDark.style.zIndex = '30';
+                cardWhite.style.zIndex = '10';
+
                 cardDark.classList.remove('card-slot-back');
                 cardDark.classList.add('card-slot-front');
 
