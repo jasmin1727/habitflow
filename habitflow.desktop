@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=HabitFlow
+Comment=Minimal Monochrome Habit & Streak Dashboard
+Exec=/home/jasmin/habitflow-desktop/run.sh
+Icon=/home/jasmin/habitflow-desktop/assets/icon.png
+Terminal=false
+Type=Application
+Categories=Utility;Office;
+StartupWMClass=HabitFlow
+Keywords=habit;tracker;routine;streak;discipline;
