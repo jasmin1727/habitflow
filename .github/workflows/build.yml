@@ -66,11 +66,15 @@ jobs:
     - name: Create Release Tarball
       run: |
         mkdir -p dist
-        tar --exclude='.git' \
-            --exclude='.venv' \
+        tar --exclude='./dist' \
+            --exclude='./.git' \
+            --exclude='./.venv' \
             --exclude='__pycache__' \
             --exclude='*.db' \
-            -czvf dist/habitflow-linux-x86_64.tar.gz .
+            --exclude='./website' \
+            --exclude='./docs' \
+            -czf /tmp/habitflow-linux-x86_64.tar.gz .
+        mv /tmp/habitflow-linux-x86_64.tar.gz dist/habitflow-linux-x86_64.tar.gz
         ls -lh dist/
 
     - name: Upload Artifact

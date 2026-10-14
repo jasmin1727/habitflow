@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitFlow — Minimal Monochrome Habit & Streak OS for Linux</title>
+    <meta name="description" content="Ultra-lightweight, native Linux habit tracker with local SQLite persistence, real-time drag navigation, dual-mode minimalism, and zero distractions.">
+    <link rel="icon" type="image/png" href="assets/icon.png">
+    
+    <!-- Modern Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Inter & JetBrains Mono Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fcfcfc',
+                            100: '#f7f7f8',
+                            200: '#ededef',
+                            300: '#e2e2e5',
+                            800: '#1e1e24',
+                            900: '#111115',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            letter-spacing: -0.015em;
+            background-color: #fafafa;
+            color: #111111;
+        }
+
+        /* Subtle modern light grid pattern */
+        .bg-light-grid {
+            background-size: 36px 36px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+        }
+
+        /* Ambient soft radial glow */
+        .ambient-soft-glow {
+            background: radial-gradient(circle at 65% 30%, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.005) 50%, transparent 80%);
+        }
+
+        /* Card interactive slots & GPU hardware acceleration */
+        .card-interactive {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 86%;
+            border-radius: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            will-change: transform, box-shadow, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.52s cubic-bezier(0.2, 0.8, 0.25, 1),
+                        box-shadow 0.52s cubic-bezier(0.2, 0.8, 0.25, 1),
+                        opacity 0.4s ease;
+        }
+
+        @media (min-width: 640px) {
+            .card-interactive {
+                width: 80%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-interactive {
+                width: 82%;
+            }
+        }
+
+        /* Front Slot: Bottom-Left (Smooth GPU Translate) */
+        .card-slot-front {
+            z-index: 25;
+            opacity: 1;
+            transform: translate3d(calc(-50% - 40px), calc(-50% + 35px), 25px) rotate(-2deg);
+            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.08);
+        }
+        @media (min-width: 640px) {
+            .card-slot-front {
+                transform: translate3d(calc(-50% - 60px), calc(-50% + 45px), 25px) rotate(-2deg);
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-slot-front {
+                transform: translate3d(calc(-50% - 70px), calc(-50% + 50px), 25px) rotate(-2deg);
+            }
+        }
+        .card-slot-front:hover {
+            transform: translate3d(calc(-50% - 72px), calc(-50% + 46px), 35px) rotate(-1deg) scale(1.015);
+            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Back Slot: Top-Right (Smooth GPU Translate with Wide Spacing) */
+        .card-slot-back {
+            z-index: 10;
+            opacity: 0.95;
+            transform: translate3d(calc(-50% + 40px), calc(-50% - 35px), -20px) rotate(3.6deg);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        @media (min-width: 640px) {
+            .card-slot-back {
+                transform: translate3d(calc(-50% + 60px), calc(-50% - 45px), -20px) rotate(3.6deg);
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-slot-back {
+                transform: translate3d(calc(-50% + 72px), calc(-50% - 50px), -20px) rotate(3.6deg);
+            }
+        }
+        .card-slot-back:hover {
+            transform: translate3d(calc(-50% + 74px), calc(-50% - 54px), -10px) rotate(3deg) scale(1.015);
+            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.18);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen lg:h-screen flex flex-col justify-between bg-light-grid antialiased selection:bg-black selection:text-white overflow-x-hidden">
+
+    <div class="relative min-h-screen lg:h-screen flex flex-col justify-between">
+        <div class="absolute inset-0 ambient-soft-glow pointer-events-none"></div>
+
+        <!-- ============================================================================== -->
+        <!-- 1. TOP HEADER / NAVBAR (Spacious, Crisp White Theme)                            -->
+        <!-- ============================================================================== -->
+        <header class="relative z-50 backdrop-blur-xl bg-white/80 border-b border-neutral-200/80 px-6 sm:px-10 lg:px-16 py-4">
+            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-6">
+                
+                <!-- Left: Official HabitFlow App Icon & Name -->
+                <a href="#" class="flex items-center gap-3.5 group">
+                    <img src="assets/icon.png" alt="HabitFlow Logo" 
+                         class="w-9 h-9 rounded-xl border border-neutral-200/90 shadow-sm group-hover:scale-105 transition-transform">
+                    <div class="flex items-center gap-2.5">
+                        <span class="font-bold text-base tracking-tight text-neutral-900">HabitFlow</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider text-neutral-600 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded-md font-semibold">MINIMAL OS</span>
+                    </div>
+                </a>
+
+                <!-- Right: Action Buttons -->
+                <div class="flex items-center gap-3">
+                    <!-- Star on GitHub Button -->
+                    <a href="https://github.com/jasmin1727/habitflow" target="_blank" 
+                       class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 hover:bg-neutral-50 text-neutral-700 hover:text-black transition-all text-xs font-medium shadow-sm">
+                        <i class="ph-bold ph-star text-sm text-amber-500"></i>
+                        <span>Star on GitHub</span>
+                    </a>
+
+                    <!-- GitHub Repository Link -->
+                    <a href="https://github.com/jasmin1727/habitflow" target="_blank" 
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 hover:bg-neutral-50 text-neutral-700 hover:text-black transition-all text-xs font-medium shadow-sm">
+                        <i class="ph-bold ph-github-logo text-sm text-neutral-800"></i>
+                        <span class="hidden xs:inline">GitHub</span>
+                    </a>
+
+                    <!-- Get HabitFlow Primary Button -->
+                    <a href="#install" 
+                       class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-black hover:bg-neutral-800 text-white font-semibold text-xs transition-all shadow-md active:scale-95">
+                        <i class="ph-bold ph-download-simple text-sm"></i>
+                        <span>Get HabitFlow</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ============================================================================== -->
+        <!-- 2. MAIN HERO SECTION (Split 2-Column: Left Text/Install + Right 3D Showcase)   -->
+        <!-- ============================================================================== -->
+        <main class="relative z-10 flex-1 flex items-center px-6 sm:px-10 lg:px-16 py-8 lg:py-10">
+            <div class="max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 xl:gap-20 items-center">
+                
+                <!-- LEFT COLUMN: Typography, Copy-Paste Install Command, Platform Buttons -->
+                <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-start text-left">
+                    
+                    <!-- Status Indicator Pill -->
+                    <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200 text-xs font-medium text-neutral-700 mb-6 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Linux Desktop App · 50MB RAM · SQLite Engine</span>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight text-neutral-950 leading-[1.08] mb-6">
+                        Quiet Consistency.<br>
+                        <span class="text-neutral-500">Zero Distraction.</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-xl mb-8">
+                        The minimal monochrome habit and streak tracking operating system for Linux. Native WebKitGTK performance, real-time drag navigation, and date-accurate local persistence.
+                    </p>
+
+                    <!-- Terminal One-Line Install Box (Spacious, Crisp White Theme, No Scrollbar) -->
+                    <div id="install" class="w-full max-w-xl mb-4">
+                        <div class="relative flex items-center justify-between rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 transition-all p-2 pl-4 shadow-sm">
+                            <div class="flex items-center gap-3 overflow-hidden mr-2">
+                                <span class="text-neutral-400 font-mono text-xs select-none font-bold">$</span>
+                                <code id="installCommandText" class="font-mono text-[13px] text-neutral-800 select-all truncate font-medium">curl -sSL https://raw.githubusercontent.com/jasmin1727/habitflow/main/install.sh | bash</code>
+                            </div>
+                            <button id="copyBtn" onclick="copyInstallCommand()" title="Copy command"
+                                class="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
+                                <i id="copyIcon" class="ph-bold ph-copy text-sm"></i>
+                                <span id="copyText">Copy</span>
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-neutral-500 mt-2 pl-1 font-mono">
+                            Installs application files, SQLite database, desktop shortcut &amp; global <code class="text-neutral-700 font-semibold">habitflow</code> command.
+                        </p>
+                    </div>
+
+                    <!-- Platform Download Buttons Row -->
+                    <div class="flex flex-wrap items-center gap-3 mt-4 pt-1">
+                        <!-- Linux Button (Active) -->
+                        <a href="https://github.com/jasmin1727/habitflow/archive/refs/heads/main.tar.gz" 
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold transition-all shadow-sm group">
+                            <i class="ph-bold ph-linux-logo text-base text-neutral-300 group-hover:text-white"></i>
+                            <span>Download for Linux (.tar.gz)</span>
+                        </a>
+
+                        <!-- Windows Button (Coming Soon) -->
+                        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-100 border border-neutral-200/80 text-neutral-400 text-xs font-medium cursor-not-allowed">
+                            <i class="ph ph-windows-logo text-sm"></i>
+                            <span>Windows</span>
+                            <span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-500">COMING SOON</span>
+                        </div>
+
+                        <!-- macOS Button (Coming Soon) -->
+                        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-100 border border-neutral-200/80 text-neutral-400 text-xs font-medium cursor-not-allowed">
+                            <i class="ph ph-apple-logo text-sm"></i>
+                            <span>macOS</span>
+                            <span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-500">COMING SOON</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: 3D Dual Cards (WHITE MODE IN FRONT, DARK MODE IN BACK WITH WIDE SPACING) -->
+                <div class="lg:col-span-6 xl:col-span-6 relative flex flex-col items-center justify-center pt-8 lg:pt-0">
+                    
+                    <div class="relative w-full h-[400px] sm:h-[480px] lg:h-[520px] xl:h-[560px] flex items-center justify-center">
+                        
+                        <!-- Soft Ambient Glow behind the display -->
+                        <div class="absolute w-[450px] h-[450px] rounded-full bg-neutral-200/50 blur-3xl pointer-events-none"></div>
+
+                        <!-- CARD 1: DARK MODE (Starts in Back Slot with Wide Spacing) -->
+                        <div id="cardDark" onclick="inspectMode('dark')" title="Click to bring Dark Mode to front"
+                             class="card-interactive card-slot-back bg-neutral-950 border border-neutral-800">
+                            <!-- Window Title Bar -->
+                            <div class="flex items-center justify-between px-4 py-2.5 bg-neutral-900 border-b border-neutral-800 text-xs text-neutral-400">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                    <span class="font-mono text-[10px] tracking-wide text-neutral-200 font-semibold uppercase">Dark Minimal Mode</span>
+                                </div>
+                                <span class="font-mono text-[10px] text-neutral-500">1440 × 900</span>
+                            </div>
+                            <img src="demo-darkmode.png" alt="HabitFlow Dark Mode" class="w-full h-auto object-cover block">
+                        </div>
+
+                        <!-- CARD 2: WHITE MODE (Starts in Front Slot with Ample Space) -->
+                        <div id="cardWhite" onclick="inspectMode('white')" title="Click to bring Light Mode to front"
+                             class="card-interactive card-slot-front bg-white border border-neutral-200/90">
+                            <!-- Window Title Bar -->
+                            <div class="flex items-center justify-between px-4 py-2.5 bg-neutral-100 border-b border-neutral-200/80 text-xs text-neutral-600">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-neutral-800"></span>
+                                    <span class="font-mono text-[10px] tracking-wide text-neutral-900 font-semibold uppercase">Clean Light Canvas</span>
+                                </div>
+                                <span class="font-mono text-[10px] text-neutral-500">1440 × 900</span>
+                            </div>
+                            <img src="demo-whitemode.png" alt="HabitFlow Light Mode" class="w-full h-auto object-cover block">
+                        </div>
+
+                    </div>
+
+                    <!-- Interactive Switcher Pill Below Cards -->
+                    <div class="mt-4 sm:mt-6 z-30 select-none">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200 shadow-sm text-xs">
+                            <span class="text-neutral-500 text-[11px] font-medium">Click to inspect:</span>
+                            <button onclick="inspectMode('dark')" id="btnInspectDark" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer">Dark Mode</button>
+                            <button onclick="inspectMode('white')" id="btnInspectWhite" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer">Light Mode</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+
+        <!-- ============================================================================== -->
+        <!-- 3. MINIMAL LIGHT FOOTER (Clean Bottom Status Bar)                              -->
+        <!-- ============================================================================== -->
+        <footer class="relative z-20 border-t border-neutral-200/80 bg-white/70 backdrop-blur-md px-6 sm:px-10 lg:px-16 py-4 text-xs text-neutral-500">
+            <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-neutral-800">HabitFlow</span>
+                    <span>— Minimal Monochrome Habit &amp; Streak OS for Linux</span>
+                </div>
+                <div class="flex items-center gap-6 font-medium">
+                    <a href="https://github.com/jasmin1727/habitflow" target="_blank" class="hover:text-black transition-colors">GitHub Repository</a>
+                    <a href="https://github.com/jasmin1727/habitflow/blob/main/LICENSE" target="_blank" class="hover:text-black transition-colors">MIT License</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ============================================================================== -->
+    <!-- INTERACTIVE JAVASCRIPT                                                         -->
+    <!-- ============================================================================== -->
+    <script>
+        // --------------------------------------------------------------------------
+        // One-Click Copy Install Command
+        // --------------------------------------------------------------------------
+        function copyInstallCommand() {
+            const cmd = document.getElementById('installCommandText').innerText.trim();
+            navigator.clipboard.writeText(cmd).then(() => {
+                const copyText = document.getElementById('copyText');
+                const copyIcon = document.getElementById('copyIcon');
+                const copyBtn = document.getElementById('copyBtn');
+
+                copyText.textContent = 'Copied!';
+                copyIcon.className = 'ph-bold ph-check text-sm text-emerald-400';
+                copyBtn.classList.remove('bg-black');
+                copyBtn.classList.add('bg-neutral-800');
+
+                setTimeout(() => {
+                    copyText.textContent = 'Copy';
+                    copyIcon.className = 'ph-bold ph-copy text-sm';
+                    copyBtn.classList.remove('bg-neutral-800');
+                    copyBtn.classList.add('bg-black');
+                }, 2200);
+            }).catch(err => {
+                console.error('Failed to copy command: ', err);
+            });
+        }
+
+        // --------------------------------------------------------------------------
+        // Interactive Dual-Card Inspection
+        // --------------------------------------------------------------------------
+        function inspectMode(mode) {
+            const cardWhite = document.getElementById('cardWhite');
+            const cardDark = document.getElementById('cardDark');
+            const btnWhite = document.getElementById('btnInspectWhite');
+            const btnDark = document.getElementById('btnInspectDark');
+
+            if (!cardWhite || !cardDark || !btnWhite || !btnDark) return;
+
+            if (mode === 'white') {
+                // Instantly promote White card to top layer for smooth glide
+                cardWhite.style.zIndex = '30';
+                cardDark.style.zIndex = '10';
+
+                cardWhite.classList.remove('card-slot-back');
+                cardWhite.classList.add('card-slot-front');
+
+                cardDark.classList.remove('card-slot-front');
+                cardDark.classList.add('card-slot-back');
+
+                btnWhite.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer';
+                btnDark.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer';
+            } else {
+                // Instantly promote Dark card to top layer for smooth glide
+                cardDark.style.zIndex = '30';
+                cardWhite.style.zIndex = '10';
+
+                cardDark.classList.remove('card-slot-back');
+                cardDark.classList.add('card-slot-front');
+
+                cardWhite.classList.remove('card-slot-front');
+                cardWhite.classList.add('card-slot-back');
+
+                btnDark.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer';
+                btnWhite.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer';
+            }
+        }
+    </script>
+</body>
+</html>
