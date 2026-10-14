@@ -60,23 +60,69 @@
             background: radial-gradient(circle at 65% 30%, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.005) 50%, transparent 80%);
         }
 
-        /* Card depth & smooth hover transitions */
-        .card-shadow-front {
-            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .card-shadow-front:hover {
-            transform: translate3d(-10px, 10px, 20px) rotate(-1deg) scale(1.015);
-            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.12);
+        /* Card interactive slots & smooth transitions */
+        .card-interactive {
+            position: absolute;
+            border-radius: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.65s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .card-shadow-back {
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Front Slot: Bottom-Left */
+        .card-slot-front {
+            bottom: 0.5rem;
+            left: 0;
+            width: 84%;
+            transform: translate3d(-8px, 24px, 20px) rotate(-2deg);
+            z-index: 25;
+            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.08);
+            opacity: 1;
         }
-        .card-shadow-back:hover {
-            transform: translate3d(20px, -20px, 10px) rotate(3deg) scale(1.02);
+        @media (min-width: 640px) {
+            .card-slot-front {
+                left: 0.5rem;
+                width: 80%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-slot-front {
+                left: 0;
+                width: 82%;
+            }
+        }
+        .card-slot-front:hover {
+            transform: translate3d(-12px, 18px, 25px) rotate(-1deg) scale(1.015);
+            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Back Slot: Top-Right (Wide spacing maintained) */
+        .card-slot-back {
+            top: 0;
+            right: 0;
+            width: 82%;
+            transform: translate3d(16px, -16px, -20px) rotate(3.5deg);
+            z-index: 10;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            opacity: 0.95;
+        }
+        @media (min-width: 640px) {
+            .card-slot-back {
+                right: 1rem;
+                width: 78%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-slot-back {
+                right: 0.5rem;
+                width: 80%;
+            }
+        }
+        .card-slot-back:hover {
+            transform: translate3d(20px, -22px, 0px) rotate(3deg) scale(1.02);
             box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.18);
+            opacity: 1;
         }
     </style>
 </head>
@@ -198,15 +244,16 @@
                 </div>
 
                 <!-- RIGHT COLUMN: 3D Dual Cards (WHITE MODE IN FRONT, DARK MODE IN BACK WITH WIDE SPACING) -->
-                <div class="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center pt-8 lg:pt-0">
+                <div class="lg:col-span-6 xl:col-span-6 relative flex flex-col items-center justify-center pt-8 lg:pt-0">
                     
                     <div class="relative w-full h-[400px] sm:h-[480px] lg:h-[520px] xl:h-[560px] flex items-center justify-center">
                         
                         <!-- Soft Ambient Glow behind the display -->
                         <div class="absolute w-[450px] h-[450px] rounded-full bg-neutral-200/50 blur-3xl pointer-events-none"></div>
 
-                        <!-- CARD 1: BACK (DARK MODE - Offset to Top Right so it is fully visible!) -->
-                        <div class="card-shadow-back absolute top-0 right-0 sm:right-4 lg:right-2 w-[82%] sm:w-[78%] lg:w-[80%] rounded-2xl bg-neutral-950 border border-neutral-800 overflow-hidden transform translate-x-4 -translate-y-4 rotate-[3.5deg] z-10 select-none">
+                        <!-- CARD 1: DARK MODE (Starts in Back Slot with Wide Spacing) -->
+                        <div id="cardDark" onclick="inspectMode('dark')" title="Click to bring Dark Mode to front"
+                             class="card-interactive card-slot-back bg-neutral-950 border border-neutral-800">
                             <!-- Window Title Bar -->
                             <div class="flex items-center justify-between px-4 py-2.5 bg-neutral-900 border-b border-neutral-800 text-xs text-neutral-400">
                                 <div class="flex items-center gap-1.5">
@@ -223,8 +270,9 @@
                             <img src="demo-darkmode.png" alt="HabitFlow Dark Mode" class="w-full h-auto object-cover block">
                         </div>
 
-                        <!-- CARD 2: FRONT (WHITE MODE - Positioned in Front, Offset to Bottom Left with Ample Space) -->
-                        <div class="card-shadow-front absolute bottom-2 left-0 sm:left-2 lg:left-0 w-[84%] sm:w-[80%] lg:w-[82%] rounded-2xl bg-white border border-neutral-200/90 overflow-hidden transform -translate-x-2 translate-y-6 -rotate-[2deg] z-20 select-none">
+                        <!-- CARD 2: WHITE MODE (Starts in Front Slot with Ample Space) -->
+                        <div id="cardWhite" onclick="inspectMode('white')" title="Click to bring Light Mode to front"
+                             class="card-interactive card-slot-front bg-white border border-neutral-200/90">
                             <!-- Window Title Bar -->
                             <div class="flex items-center justify-between px-4 py-2.5 bg-neutral-100 border-b border-neutral-200/80 text-xs text-neutral-600">
                                 <div class="flex items-center gap-1.5">
@@ -241,6 +289,15 @@
                             <img src="demo-whitemode.png" alt="HabitFlow Light Mode" class="w-full h-auto object-cover block">
                         </div>
 
+                    </div>
+
+                    <!-- Interactive Switcher Pill Below Cards -->
+                    <div class="mt-4 sm:mt-6 z-30 select-none">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200 shadow-sm text-xs">
+                            <span class="text-neutral-500 text-[11px] font-medium">Click to inspect:</span>
+                            <button onclick="inspectMode('dark')" id="btnInspectDark" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer">Dark Mode</button>
+                            <button onclick="inspectMode('white')" id="btnInspectWhite" class="px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer">Light Mode</button>
+                        </div>
                     </div>
 
                 </div>
@@ -294,6 +351,40 @@
             }).catch(err => {
                 console.error('Failed to copy command: ', err);
             });
+        }
+
+        // --------------------------------------------------------------------------
+        // Interactive Dual-Card Inspection
+        // --------------------------------------------------------------------------
+        function inspectMode(mode) {
+            const cardWhite = document.getElementById('cardWhite');
+            const cardDark = document.getElementById('cardDark');
+            const btnWhite = document.getElementById('btnInspectWhite');
+            const btnDark = document.getElementById('btnInspectDark');
+
+            if (!cardWhite || !cardDark || !btnWhite || !btnDark) return;
+
+            if (mode === 'white') {
+                // White moves to Front Slot (bottom-left), Dark moves to Back Slot (top-right)
+                cardWhite.classList.remove('card-slot-back');
+                cardWhite.classList.add('card-slot-front');
+
+                cardDark.classList.remove('card-slot-front');
+                cardDark.classList.add('card-slot-back');
+
+                btnWhite.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer';
+                btnDark.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer';
+            } else {
+                // Dark moves to Front Slot (bottom-left), White moves to Back Slot (top-right)
+                cardDark.classList.remove('card-slot-back');
+                cardDark.classList.add('card-slot-front');
+
+                cardWhite.classList.remove('card-slot-front');
+                cardWhite.classList.add('card-slot-back');
+
+                btnDark.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all bg-black text-white shadow-sm cursor-pointer';
+                btnWhite.className = 'px-3 py-1 rounded-full text-[11px] font-semibold transition-all text-neutral-600 hover:text-black hover:bg-neutral-100 cursor-pointer';
+            }
         }
     </script>
 </body>
