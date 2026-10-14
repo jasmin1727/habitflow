@@ -28,7 +28,7 @@
 ## 📸 Preview
 
 <div align="center">
-  <img src="demo.png" alt="HabitFlow Dashboard Preview" width="100%" style="border-radius: 12px; border: 1px solid rgba(128,128,128,0.2); box-shadow: 0 16px 40px rgba(0,0,0,0.25);" />
+  <img src="demo-whitemode.png" alt="HabitFlow Dashboard Preview (Light Mode)" width="100%" style="border-radius: 12px; border: 1px solid rgba(128,128,128,0.2); box-shadow: 0 16px 40px rgba(0,0,0,0.15);" />
 </div>
 
 ---

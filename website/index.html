@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,14 +11,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Inter Google Font -->
+    <!-- Inter & JetBrains Mono Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -26,10 +25,13 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        neutral: {
-                            750: '#222222',
-                            850: '#151515',
-                            950: '#0a0a0a',
+                        brand: {
+                            50: '#fcfcfc',
+                            100: '#f7f7f8',
+                            200: '#ededef',
+                            300: '#e2e2e5',
+                            800: '#1e1e24',
+                            900: '#111115',
                         }
                     }
                 }
@@ -41,122 +43,83 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             letter-spacing: -0.015em;
+            background-color: #fafafa;
+            color: #111111;
         }
 
-        /* Subtle fine grid pattern */
-        .bg-grid {
-            background-size: 32px 32px;
+        /* Subtle modern light grid pattern */
+        .bg-light-grid {
+            background-size: 36px 36px;
             background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+                linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
         }
 
-        /* Ambient Hero Radial Glow */
-        .ambient-glow {
-            background: radial-gradient(circle at 75% 35%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 70%);
+        /* Ambient soft radial glow */
+        .ambient-soft-glow {
+            background: radial-gradient(circle at 65% 30%, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.005) 50%, transparent 80%);
         }
 
-        /* 3D Perspective Card Container */
-        .perspective-container {
-            perspective: 1400px;
+        /* Card depth & smooth hover transitions */
+        .card-shadow-front {
+            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-shadow-front:hover {
+            transform: translate3d(-10px, 10px, 20px) rotate(-1deg) scale(1.015);
+            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.12);
         }
 
-        .card-3d-white {
-            transform: translate3d(-35px, -20px, 0) rotateZ(-5deg) rotateY(6deg) rotateX(4deg);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        .card-shadow-back {
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        .card-3d-dark {
-            transform: translate3d(25px, 25px, 20px) rotateZ(3deg) rotateY(-4deg) rotateX(2deg);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .card-3d-white.is-front {
-            transform: translate3d(15px, 15px, 30px) rotateZ(-1deg) scale(1.03);
-            z-index: 30 !important;
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.2);
-        }
-
-        .card-3d-white.is-back {
-            transform: translate3d(-40px, -25px, -20px) rotateZ(-6deg) scale(0.95);
-            z-index: 10 !important;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
-            opacity: 0.85;
-        }
-
-        .card-3d-dark.is-front {
-            transform: translate3d(20px, 20px, 30px) rotateZ(1deg) scale(1.03);
-            z-index: 30 !important;
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.25);
-        }
-
-        .card-3d-dark.is-back {
-            transform: translate3d(-40px, -25px, -20px) rotateZ(-5deg) scale(0.95);
-            z-index: 10 !important;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
-            opacity: 0.85;
-        }
-
-        /* Checkbox pop micro-interaction */
-        @keyframes checkPop {
-            0% { transform: scale(0.85); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
-        .animate-pop {
-            animation: checkPop 0.18s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        .card-shadow-back:hover {
+            transform: translate3d(20px, -20px, 10px) rotate(3deg) scale(1.02);
+            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.18);
         }
     </style>
 </head>
-<body class="bg-[#090909] text-neutral-100 min-h-screen antialiased selection:bg-white selection:text-neutral-950">
+<body class="min-h-screen lg:h-screen flex flex-col justify-between bg-light-grid antialiased selection:bg-black selection:text-white overflow-x-hidden">
 
-    <div class="relative min-h-screen bg-grid overflow-x-hidden">
-        <div class="absolute inset-0 ambient-glow pointer-events-none"></div>
+    <div class="relative min-h-screen lg:h-screen flex flex-col justify-between">
+        <div class="absolute inset-0 ambient-soft-glow pointer-events-none"></div>
 
         <!-- ============================================================================== -->
-        <!-- TOP NAVIGATION BAR                                                            -->
+        <!-- 1. TOP HEADER / NAVBAR (Spacious, Crisp White Theme)                            -->
         <!-- ============================================================================== -->
-        <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#090909]/85 border-b border-neutral-800/80">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <header class="relative z-50 backdrop-blur-xl bg-white/80 border-b border-neutral-200/80 px-6 sm:px-10 lg:px-16 py-4">
+            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-6">
                 
-                <!-- Left: HabitFlow Logo Badge -->
-                <a href="#" class="flex items-center gap-3 group">
-                    <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 transition-all">
-                        <div class="w-5 h-5 rounded-md bg-white text-black flex items-center justify-center font-bold text-xs shadow-sm">
-                            <i class="ph-bold ph-check text-[11px]"></i>
-                        </div>
-                        <span class="font-bold text-sm tracking-tight text-white">HabitFlow</span>
-                        <span class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 bg-neutral-800 px-1.5 py-0.5 rounded">MINIMAL OS</span>
+                <!-- Left: Official HabitFlow App Icon & Name -->
+                <a href="#" class="flex items-center gap-3.5 group">
+                    <img src="assets/icon.png" alt="HabitFlow Logo" 
+                         class="w-9 h-9 rounded-xl border border-neutral-200/90 shadow-sm group-hover:scale-105 transition-transform">
+                    <div class="flex items-center gap-2.5">
+                        <span class="font-bold text-base tracking-tight text-neutral-900">HabitFlow</span>
+                        <span class="text-[10px] font-mono uppercase tracking-wider text-neutral-600 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded-md font-semibold">MINIMAL OS</span>
                     </div>
                 </a>
 
-                <!-- Center Nav Links -->
-                <nav class="hidden md:flex items-center gap-8 text-xs font-medium text-neutral-400">
-                    <a href="#features" class="hover:text-white transition-colors">Features</a>
-                    <a href="#demo" class="hover:text-white transition-colors">Interactive Demo</a>
-                    <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
-                    <a href="#roadmap" class="hover:text-white transition-colors">Roadmap</a>
-                </nav>
-
-                <!-- Right Actions: Star, GitHub, Get HabitFlow -->
-                <div class="flex items-center gap-2.5">
+                <!-- Right: Action Buttons -->
+                <div class="flex items-center gap-3">
                     <!-- Star on GitHub Button -->
                     <a href="https://github.com/jasmin1727/habitflow" target="_blank" 
-                       class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-850 text-neutral-300 hover:text-white transition-all text-xs font-medium">
-                        <i class="ph ph-star text-sm text-amber-300"></i>
+                       class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 hover:bg-neutral-50 text-neutral-700 hover:text-black transition-all text-xs font-medium shadow-sm">
+                        <i class="ph-bold ph-star text-sm text-amber-500"></i>
                         <span>Star on GitHub</span>
                     </a>
 
-                    <!-- GitHub Repo Link -->
+                    <!-- GitHub Repository Link -->
                     <a href="https://github.com/jasmin1727/habitflow" target="_blank" 
-                       class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-neutral-900/90 border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-850 text-neutral-300 hover:text-white transition-all text-xs font-medium">
-                        <i class="ph-bold ph-github-logo text-sm"></i>
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 hover:bg-neutral-50 text-neutral-700 hover:text-black transition-all text-xs font-medium shadow-sm">
+                        <i class="ph-bold ph-github-logo text-sm text-neutral-800"></i>
                         <span class="hidden xs:inline">GitHub</span>
                     </a>
 
-                    <!-- Get HabitFlow Pill Button -->
+                    <!-- Get HabitFlow Primary Button -->
                     <a href="#install" 
-                       class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-all shadow-sm active:scale-95">
+                       class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-black hover:bg-neutral-800 text-white font-semibold text-xs transition-all shadow-md active:scale-95">
                         <i class="ph-bold ph-download-simple text-sm"></i>
                         <span>Get HabitFlow</span>
                     </a>
@@ -165,107 +128,87 @@
         </header>
 
         <!-- ============================================================================== -->
-        <!-- HERO SECTION (Split 2-Column: Left Text/Install + Right 3D Dual Cards)        -->
+        <!-- 2. MAIN HERO SECTION (Split 2-Column: Left Text/Install + Right 3D Showcase)   -->
         <!-- ============================================================================== -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 lg:pt-20 pb-20 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <main class="relative z-10 flex-1 flex items-center px-6 sm:px-10 lg:px-16 py-8 lg:py-10">
+            <div class="max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 xl:gap-20 items-center">
                 
-                <!-- LEFT COLUMN: Typography, Terminal Install Box, Platform Download Buttons -->
+                <!-- LEFT COLUMN: Typography, Copy-Paste Install Command, Platform Buttons -->
                 <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-start text-left">
                     
-                    <!-- Indicator Pill Badge -->
-                    <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-neutral-900/90 border border-neutral-800 text-xs font-medium text-neutral-300 mb-6 backdrop-blur-sm">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <!-- Status Indicator Pill -->
+                    <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200 text-xs font-medium text-neutral-700 mb-6 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>Linux Desktop App · 50MB RAM · SQLite Engine</span>
                     </div>
 
                     <!-- Main Headline -->
-                    <h1 class="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight text-white leading-[1.08] mb-6">
+                    <h1 class="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight text-neutral-950 leading-[1.08] mb-6">
                         Quiet Consistency.<br>
-                        <span class="text-neutral-400">Zero Distraction.</span>
+                        <span class="text-neutral-500">Zero Distraction.</span>
                     </h1>
 
                     <!-- Subtitle -->
-                    <p class="text-base sm:text-lg text-neutral-400 leading-relaxed max-w-xl mb-8">
+                    <p class="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-xl mb-8">
                         The minimal monochrome habit and streak tracking operating system for Linux. Native WebKitGTK performance, real-time drag navigation, and date-accurate local persistence.
                     </p>
 
-                    <!-- Terminal One-Line Install Box (Wide, Clean, No Scrollbar) -->
-                    <div id="install" class="w-full max-w-xl mb-3">
-                        <div class="relative flex items-center justify-between rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 transition-all p-2 pl-4 shadow-2xl">
+                    <!-- Terminal One-Line Install Box (Spacious, Crisp White Theme, No Scrollbar) -->
+                    <div id="install" class="w-full max-w-xl mb-4">
+                        <div class="relative flex items-center justify-between rounded-xl bg-white border border-neutral-200/90 hover:border-neutral-300 transition-all p-2 pl-4 shadow-sm">
                             <div class="flex items-center gap-3 overflow-hidden mr-2">
-                                <span class="text-neutral-500 font-mono text-xs select-none">$</span>
-                                <code id="installCommandText" class="font-mono text-[13px] text-neutral-200 select-all truncate">curl -sSL https://raw.githubusercontent.com/jasmin1727/habitflow/main/install.sh | bash</code>
+                                <span class="text-neutral-400 font-mono text-xs select-none font-bold">$</span>
+                                <code id="installCommandText" class="font-mono text-[13px] text-neutral-800 select-all truncate font-medium">curl -sSL https://raw.githubusercontent.com/jasmin1727/habitflow/main/install.sh | bash</code>
                             </div>
                             <button id="copyBtn" onclick="copyInstallCommand()" title="Copy command"
-                                class="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white hover:bg-neutral-200 text-black text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
+                                class="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold transition-all cursor-pointer shadow-sm active:scale-95">
                                 <i id="copyIcon" class="ph-bold ph-copy text-sm"></i>
                                 <span id="copyText">Copy</span>
                             </button>
                         </div>
                         <p class="text-[11px] text-neutral-500 mt-2 pl-1 font-mono">
-                            Installs application files, SQLite database, desktop shortcut &amp; global <code class="text-neutral-400">habitflow</code> command.
+                            Installs application files, SQLite database, desktop shortcut &amp; global <code class="text-neutral-700 font-semibold">habitflow</code> command.
                         </p>
                     </div>
 
                     <!-- Platform Download Buttons Row -->
-                    <div class="flex flex-wrap items-center gap-3 mt-4 pt-2">
+                    <div class="flex flex-wrap items-center gap-3 mt-4 pt-1">
                         <!-- Linux Button (Active) -->
                         <a href="https://github.com/jasmin1727/habitflow/archive/refs/heads/main.tar.gz" 
-                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-750 hover:border-neutral-500 hover:bg-neutral-850 text-white text-xs font-semibold transition-all shadow-sm group">
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold transition-all shadow-sm group">
                             <i class="ph-bold ph-linux-logo text-base text-neutral-300 group-hover:text-white"></i>
                             <span>Download for Linux (.tar.gz)</span>
                         </a>
 
                         <!-- Windows Button (Coming Soon) -->
-                        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-950/70 border border-neutral-900 text-neutral-500 text-xs font-medium cursor-not-allowed">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-100 border border-neutral-200/80 text-neutral-400 text-xs font-medium cursor-not-allowed">
                             <i class="ph ph-windows-logo text-sm"></i>
                             <span>Windows</span>
-                            <span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-neutral-900 text-neutral-500 border border-neutral-800">COMING SOON</span>
+                            <span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-500">COMING SOON</span>
                         </div>
 
                         <!-- macOS Button (Coming Soon) -->
-                        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-950/70 border border-neutral-900 text-neutral-500 text-xs font-medium cursor-not-allowed">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-100 border border-neutral-200/80 text-neutral-400 text-xs font-medium cursor-not-allowed">
                             <i class="ph ph-apple-logo text-sm"></i>
                             <span>macOS</span>
-                            <span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-neutral-900 text-neutral-500 border border-neutral-800">COMING SOON</span>
+                            <span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-500">COMING SOON</span>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- RIGHT COLUMN: 3D Slanted Dual-Mode Overlapping Showcase (Dark + Light) -->
-                <div class="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center pt-6 lg:pt-0">
+                <!-- RIGHT COLUMN: 3D Dual Cards (WHITE MODE IN FRONT, DARK MODE IN BACK WITH WIDE SPACING) -->
+                <div class="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center pt-8 lg:pt-0">
                     
-                    <div class="perspective-container relative w-full h-[380px] sm:h-[460px] md:h-[500px] flex items-center justify-center">
+                    <div class="relative w-full h-[400px] sm:h-[480px] lg:h-[520px] xl:h-[560px] flex items-center justify-center">
                         
-                        <!-- Ambient Radial Glow behind mockups -->
-                        <div class="absolute w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-white/[0.04] blur-3xl pointer-events-none"></div>
+                        <!-- Soft Ambient Glow behind the display -->
+                        <div class="absolute w-[450px] h-[450px] rounded-full bg-neutral-200/50 blur-3xl pointer-events-none"></div>
 
-                        <!-- Card 1: Light Mode (Paper White Canvas) -->
-                        <div id="cardWhite" onclick="bringToFront('white')"
-                             class="card-3d-white is-back absolute w-[92%] sm:w-[86%] rounded-2xl bg-[#f4f4f4] border border-neutral-300/40 shadow-2xl overflow-hidden cursor-pointer select-none group">
+                        <!-- CARD 1: BACK (DARK MODE - Offset to Top Right so it is fully visible!) -->
+                        <div class="card-shadow-back absolute top-0 right-0 sm:right-4 lg:right-2 w-[82%] sm:w-[78%] lg:w-[80%] rounded-2xl bg-neutral-950 border border-neutral-800 overflow-hidden transform translate-x-4 -translate-y-4 rotate-[3.5deg] z-10 select-none">
                             <!-- Window Title Bar -->
-                            <div class="flex items-center justify-between px-3.5 py-2 bg-[#eaeaea] border-b border-neutral-300/60 text-xs text-neutral-600">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-400"></span>
-                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-400"></span>
-                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-400"></span>
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-neutral-700"></span>
-                                    <span class="font-mono text-[10px] tracking-wide text-neutral-800 font-semibold uppercase">Clean Light Mode</span>
-                                </div>
-                                <span class="font-mono text-[10px] text-neutral-500">1440 × 900</span>
-                            </div>
-                            <img src="demo-whitemode.png" alt="HabitFlow Light Mode" class="w-full h-auto object-cover block group-hover:scale-[1.01] transition-transform duration-300">
-                        </div>
-
-                        <!-- Card 2: Dark Mode (Minimal OS Canvas) -->
-                        <div id="cardDark" onclick="bringToFront('dark')"
-                             class="card-3d-dark is-front absolute w-[92%] sm:w-[86%] rounded-2xl bg-neutral-950 border border-neutral-750 shadow-2xl overflow-hidden cursor-pointer select-none group">
-                            <!-- Window Title Bar -->
-                            <div class="flex items-center justify-between px-3.5 py-2 bg-neutral-900 border-b border-neutral-800 text-xs text-neutral-400">
+                            <div class="flex items-center justify-between px-4 py-2.5 bg-neutral-900 border-b border-neutral-800 text-xs text-neutral-400">
                                 <div class="flex items-center gap-1.5">
                                     <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
                                     <span class="w-2.5 h-2.5 rounded-full bg-neutral-700"></span>
@@ -273,18 +216,29 @@
                                 </div>
                                 <div class="flex items-center gap-1.5">
                                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                    <span class="font-mono text-[10px] tracking-wide text-neutral-200 font-semibold uppercase">Minimal Dark Mode</span>
+                                    <span class="font-mono text-[10px] tracking-wide text-neutral-200 font-semibold uppercase">Dark Minimal Mode</span>
                                 </div>
                                 <span class="font-mono text-[10px] text-neutral-500">1440 × 900</span>
                             </div>
-                            <img src="demo-darkmode.png" alt="HabitFlow Dark Mode" class="w-full h-auto object-cover block group-hover:scale-[1.01] transition-transform duration-300">
+                            <img src="demo-darkmode.png" alt="HabitFlow Dark Mode" class="w-full h-auto object-cover block">
                         </div>
 
-                        <!-- Interactive Switcher Badge -->
-                        <div class="absolute -bottom-4 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900/95 border border-neutral-750 backdrop-blur-md shadow-xl text-xs z-40">
-                            <span class="text-neutral-400 text-[11px]">Click to inspect:</span>
-                            <button onclick="bringToFront('dark')" id="btnDarkTab" class="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-white text-black transition-all">Dark Mode</button>
-                            <button onclick="bringToFront('white')" id="btnWhiteTab" class="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-800 text-neutral-400 hover:text-white transition-all">Light Mode</button>
+                        <!-- CARD 2: FRONT (WHITE MODE - Positioned in Front, Offset to Bottom Left with Ample Space) -->
+                        <div class="card-shadow-front absolute bottom-2 left-0 sm:left-2 lg:left-0 w-[84%] sm:w-[80%] lg:w-[82%] rounded-2xl bg-white border border-neutral-200/90 overflow-hidden transform -translate-x-2 translate-y-6 -rotate-[2deg] z-20 select-none">
+                            <!-- Window Title Bar -->
+                            <div class="flex items-center justify-between px-4 py-2.5 bg-neutral-100 border-b border-neutral-200/80 text-xs text-neutral-600">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-neutral-800"></span>
+                                    <span class="font-mono text-[10px] tracking-wide text-neutral-900 font-semibold uppercase">Clean Light Canvas</span>
+                                </div>
+                                <span class="font-mono text-[10px] text-neutral-500">1440 × 900</span>
+                            </div>
+                            <img src="demo-whitemode.png" alt="HabitFlow Light Mode" class="w-full h-auto object-cover block">
                         </div>
 
                     </div>
@@ -292,286 +246,20 @@
                 </div>
 
             </div>
-        </section>
+        </main>
 
         <!-- ============================================================================== -->
-        <!-- INTERACTIVE LIVE DEMO (Browser-based habit matrix test widget)                  -->
+        <!-- 3. MINIMAL LIGHT FOOTER (Clean Bottom Status Bar)                              -->
         <!-- ============================================================================== -->
-        <section id="demo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-neutral-850">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-xs font-mono uppercase tracking-widest text-neutral-400 px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800">Try It Live</span>
-                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mt-4">Interactive Habit Matrix</h2>
-                <p class="text-sm text-neutral-400 mt-2">Test the completion mechanic right here in your browser. Click any day to toggle your habits.</p>
-            </div>
-
-            <!-- Demo Card Widget -->
-            <div class="rounded-2xl border border-neutral-800 bg-neutral-950/90 shadow-2xl p-4 sm:p-6 backdrop-blur-sm">
-                <!-- Top Header in Widget -->
-                <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-800/70 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                        <span class="font-semibold text-white">Current Week Matrix</span>
-                        <span class="text-neutral-500 font-mono text-[11px]">(Mon — Sun)</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-neutral-400" id="demoScoreDisplay">Total: 15/35 (43%)</span>
-                        <button onclick="resetDemoHabits()" class="px-2.5 py-1 rounded-md bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-[11px] transition-all">Reset Matrix</button>
-                    </div>
-                </div>
-
-                <!-- Habits Checklist Container -->
-                <div class="divide-y divide-neutral-800/60 mt-2" id="demoRowsContainer">
-                    <!-- Populated dynamically via JS below -->
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================================== -->
-        <!-- CORE CAPABILITIES (Bento Grid)                                                 -->
-        <!-- ============================================================================== -->
-        <section id="features" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-neutral-850">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-xs font-mono uppercase tracking-widest text-neutral-400 px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800">Engineering</span>
-                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mt-4">Engineered for Silence & Speed</h2>
-                <p class="text-sm text-neutral-400 mt-2">No bloated frameworks. No subscriptions. No cloud surveillance. Just your habits and your discipline.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Feature 1 -->
-                <div class="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all group">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform">
-                            <i class="ph-bold ph-cpu text-lg"></i>
-                        </div>
-                        <h3 class="text-base font-semibold text-white">~50MB RAM Footprint</h3>
-                        <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
-                            Built on native WebKitGTK 4.1 via PyWebView. Consumes one-third the resources of heavy Electron wrappers.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-neutral-900 flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>Zero Electron bloat</span>
-                    </div>
-                </div>
-
-                <!-- Feature 2 -->
-                <div class="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all group">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform">
-                            <i class="ph-bold ph-database text-lg"></i>
-                        </div>
-                        <h3 class="text-base font-semibold text-white">Local SQLite Persistence</h3>
-                        <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
-                            All habit tracking, streaks, and timestamps live inside <code class="text-neutral-300">~/.local/share/habitflow/habitflow.db</code>. 100% offline, private, and portable.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-neutral-900 flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                        <span>Zero telemetry</span>
-                    </div>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all group">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform">
-                            <i class="ph-bold ph-arrows-left-right text-lg"></i>
-                        </div>
-                        <h3 class="text-base font-semibold text-white">Fluid Drag Week Navigation</h3>
-                        <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
-                            Click and drag horizontally across the week columns with realistic physics and damping. Each date accurately preserves historical completion state.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-neutral-900 flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
-                        <span>GPU-accelerated physics</span>
-                    </div>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all group">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform">
-                            <i class="ph-bold ph-trash text-lg"></i>
-                        </div>
-                        <h3 class="text-base font-semibold text-white">Habit Deletion & Management</h3>
-                        <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
-                            Direct trash actions on every habit row with safety confirmation dialogs, plus a centralized Manage Habits modal to inspect and clean routines.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-neutral-900 flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                        <span>Safe deletion safeguards</span>
-                    </div>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all group">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform">
-                            <i class="ph-bold ph-squares-four text-lg"></i>
-                        </div>
-                        <h3 class="text-base font-semibold text-white">Icon-First Zen Header</h3>
-                        <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
-                            Top center navigation with 4 clean rounded square icons for Habits, Notes, Calendar, and Profile. Pure minimalism without visual clutter.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-neutral-900 flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>Distraction-free OS</span>
-                    </div>
-                </div>
-
-                <!-- Feature 6 -->
-                <div class="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 flex flex-col justify-between hover:border-neutral-700 transition-all group">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform">
-                            <i class="ph-bold ph-terminal-window text-lg"></i>
-                        </div>
-                        <h3 class="text-base font-semibold text-white">One-Command Auto Install</h3>
-                        <p class="text-xs text-neutral-400 mt-2 leading-relaxed">
-                            Automated installer with centered ASCII logo art, dependency verification, desktop launcher (.desktop) registration, and CLI binary.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-neutral-900 flex items-center gap-2 text-[11px] text-neutral-500 font-mono">
-                        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-                        <span>One line curl setup</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================================== -->
-        <!-- ARCHITECTURE & TECH SPECS                                                      -->
-        <!-- ============================================================================== -->
-        <section id="architecture" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-neutral-850">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <div class="lg:col-span-5">
-                    <span class="text-xs font-mono uppercase tracking-widest text-neutral-400 px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800">Stack</span>
-                    <h2 class="text-3xl font-bold tracking-tight text-white mt-4">Simple, Resilient Architecture</h2>
-                    <p class="text-sm text-neutral-400 mt-3 leading-relaxed">
-                        HabitFlow is purposely built with standard Linux technologies that will continue to function smoothly for decades without breaking changes or dependency rot.
-                    </p>
-                </div>
-                <div class="lg:col-span-7 grid grid-cols-2 gap-4">
-                    <div class="p-4 rounded-xl border border-neutral-800 bg-neutral-950">
-                        <span class="text-xs text-neutral-500 font-mono">GUI Runtime</span>
-                        <h4 class="text-base font-semibold text-white mt-1">PyWebView 6.2</h4>
-                        <p class="text-xs text-neutral-400 mt-1">WebKitGTK 4.1 system webview binding with low CPU overhead.</p>
-                    </div>
-                    <div class="p-4 rounded-xl border border-neutral-800 bg-neutral-950">
-                        <span class="text-xs text-neutral-500 font-mono">Storage Engine</span>
-                        <h4 class="text-base font-semibold text-white mt-1">SQLite 3</h4>
-                        <p class="text-xs text-neutral-400 mt-1">ACID-compliant relational database with date-stamped completion logs.</p>
-                    </div>
-                    <div class="p-4 rounded-xl border border-neutral-800 bg-neutral-950">
-                        <span class="text-xs text-neutral-500 font-mono">Styling & UI</span>
-                        <h4 class="text-base font-semibold text-white mt-1">Tailwind CSS + Phosphor</h4>
-                        <p class="text-xs text-neutral-400 mt-1">Edge-to-edge typography, smooth transitions, and monochrome icons.</p>
-                    </div>
-                    <div class="p-4 rounded-xl border border-neutral-800 bg-neutral-950">
-                        <span class="text-xs text-neutral-500 font-mono">CI / CD</span>
-                        <h4 class="text-base font-semibold text-white mt-1">GitHub Actions</h4>
-                        <p class="text-xs text-neutral-400 mt-1">Multi-Python matrix tests, flake8 linting, and automated tarball packaging.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================================== -->
-        <!-- ROADMAP SECTION                                                                -->
-        <!-- ============================================================================== -->
-        <section id="roadmap" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-neutral-850">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-xs font-mono uppercase tracking-widest text-neutral-400 px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800">Evolution</span>
-                <h2 class="text-3xl font-bold tracking-tight text-white mt-4">Development Roadmap</h2>
-                <p class="text-sm text-neutral-400 mt-2">Active feature plan for future HabitFlow releases.</p>
-            </div>
-
-            <div class="max-w-3xl mx-auto space-y-3">
-                <div class="flex items-center justify-between p-4 rounded-xl border border-neutral-800 bg-neutral-950/60">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-fill ph-check-circle text-emerald-400 text-lg"></i>
-                        <span class="text-sm font-medium text-white">WebKitGTK Desktop Engine (~50MB RAM)</span>
-                    </div>
-                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Shipped</span>
-                </div>
-                <div class="flex items-center justify-between p-4 rounded-xl border border-neutral-800 bg-neutral-950/60">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-fill ph-check-circle text-emerald-400 text-lg"></i>
-                        <span class="text-sm font-medium text-white">Full Edge-to-Edge Fluid Mouse Drag Matrix</span>
-                    </div>
-                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Shipped</span>
-                </div>
-                <div class="flex items-center justify-between p-4 rounded-xl border border-neutral-800 bg-neutral-950/60">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-fill ph-check-circle text-emerald-400 text-lg"></i>
-                        <span class="text-sm font-medium text-white">SQLite Persistence & Habit Deletion Safeguards</span>
-                    </div>
-                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Shipped</span>
-                </div>
-                <div class="flex items-center justify-between p-4 rounded-xl border border-neutral-850 bg-neutral-950/30">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-bold ph-hourglass text-neutral-500 text-lg"></i>
-                        <span class="text-sm font-medium text-neutral-300">Notes View — Daily reflection markdown logs</span>
-                    </div>
-                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-neutral-800">Coming Soon</span>
-                </div>
-                <div class="flex items-center justify-between p-4 rounded-xl border border-neutral-850 bg-neutral-950/30">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-bold ph-hourglass text-neutral-500 text-lg"></i>
-                        <span class="text-sm font-medium text-neutral-300">Calendar View — Monthly heatmap consistency grid</span>
-                    </div>
-                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-neutral-800">Coming Soon</span>
-                </div>
-                <div class="flex items-center justify-between p-4 rounded-xl border border-neutral-850 bg-neutral-950/30">
-                    <div class="flex items-center gap-3">
-                        <i class="ph-bold ph-hourglass text-neutral-500 text-lg"></i>
-                        <span class="text-sm font-medium text-neutral-300">Cross-Platform Builds (Windows &amp; macOS binaries)</span>
-                    </div>
-                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-neutral-800">Coming Soon</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================================== -->
-        <!-- OPEN SOURCE & FORK INVITATION                                                  -->
-        <!-- ============================================================================== -->
-        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center border-t border-neutral-850">
-            <div class="p-8 sm:p-12 rounded-3xl border border-neutral-800 bg-neutral-950 relative overflow-hidden shadow-2xl">
-                <div class="relative z-10">
-                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Join the HabitFlow Movement</h2>
-                    <p class="text-sm sm:text-base text-neutral-400 max-w-xl mx-auto mt-4 leading-relaxed">
-                        HabitFlow is 100% Free and Open Source under the MIT License. Contributions, packaging for other Linux distributions, and community forks are warmly welcomed!
-                    </p>
-                    <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
-                        <a href="https://github.com/jasmin1727/habitflow/fork" target="_blank"
-                           class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-semibold transition-all shadow-sm">
-                            <i class="ph-bold ph-git-fork text-sm"></i>
-                            <span>Fork on GitHub</span>
-                        </a>
-                        <a href="https://github.com/jasmin1727/habitflow" target="_blank"
-                           class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-white text-xs font-semibold transition-all">
-                            <i class="ph-bold ph-star text-sm text-amber-300"></i>
-                            <span>Star Repository</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================================== -->
-        <!-- MINIMALIST FOOTER                                                              -->
-        <!-- ============================================================================== -->
-        <footer class="border-t border-neutral-900 py-12 text-center text-xs text-neutral-500">
-            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <footer class="relative z-20 border-t border-neutral-200/80 bg-white/70 backdrop-blur-md px-6 sm:px-10 lg:px-16 py-4 text-xs text-neutral-500">
+            <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
-                    <span class="font-semibold text-neutral-300">HabitFlow</span>
-                    <span>— Minimal Monochrome Habit &amp; Streak OS</span>
+                    <span class="font-semibold text-neutral-800">HabitFlow</span>
+                    <span>— Minimal Monochrome Habit &amp; Streak OS for Linux</span>
                 </div>
-                <div class="flex items-center gap-6">
-                    <a href="https://github.com/jasmin1727/habitflow" target="_blank" class="hover:text-white transition-colors">GitHub</a>
-                    <a href="https://github.com/jasmin1727/habitflow/blob/main/LICENSE" target="_blank" class="hover:text-white transition-colors">License (MIT)</a>
+                <div class="flex items-center gap-6 font-medium">
+                    <a href="https://github.com/jasmin1727/habitflow" target="_blank" class="hover:text-black transition-colors">GitHub Repository</a>
+                    <a href="https://github.com/jasmin1727/habitflow/blob/main/LICENSE" target="_blank" class="hover:text-black transition-colors">MIT License</a>
                 </div>
             </div>
         </footer>
@@ -579,35 +267,11 @@
     </div>
 
     <!-- ============================================================================== -->
-    <!-- INTERACTIVE JAVASCRIPT LOGIC                                                   -->
+    <!-- INTERACTIVE JAVASCRIPT                                                         -->
     <!-- ============================================================================== -->
     <script>
         // --------------------------------------------------------------------------
-        // 1. Dual 3D Card Front/Back Switching Logic
-        // --------------------------------------------------------------------------
-        function bringToFront(mode) {
-            const cardDark = document.getElementById('cardDark');
-            const cardWhite = document.getElementById('cardWhite');
-            const btnDarkTab = document.getElementById('btnDarkTab');
-            const btnWhiteTab = document.getElementById('btnWhiteTab');
-
-            if (mode === 'dark') {
-                cardDark.className = 'card-3d-dark is-front absolute w-[92%] sm:w-[86%] rounded-2xl bg-neutral-950 border border-neutral-750 shadow-2xl overflow-hidden cursor-pointer select-none group';
-                cardWhite.className = 'card-3d-white is-back absolute w-[92%] sm:w-[86%] rounded-2xl bg-[#f4f4f4] border border-neutral-300/40 shadow-2xl overflow-hidden cursor-pointer select-none group';
-                
-                btnDarkTab.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-white text-black transition-all';
-                btnWhiteTab.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-800 text-neutral-400 hover:text-white transition-all';
-            } else {
-                cardWhite.className = 'card-3d-white is-front absolute w-[92%] sm:w-[86%] rounded-2xl bg-[#f4f4f4] border border-neutral-300/40 shadow-2xl overflow-hidden cursor-pointer select-none group';
-                cardDark.className = 'card-3d-dark is-back absolute w-[92%] sm:w-[86%] rounded-2xl bg-neutral-950 border border-neutral-750 shadow-2xl overflow-hidden cursor-pointer select-none group';
-                
-                btnWhiteTab.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-white text-black transition-all';
-                btnDarkTab.className = 'px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-neutral-800 text-neutral-400 hover:text-white transition-all';
-            }
-        }
-
-        // --------------------------------------------------------------------------
-        // 2. One-Click Copy Install Command
+        // One-Click Copy Install Command
         // --------------------------------------------------------------------------
         function copyInstallCommand() {
             const cmd = document.getElementById('installCommandText').innerText.trim();
@@ -617,94 +281,20 @@
                 const copyBtn = document.getElementById('copyBtn');
 
                 copyText.textContent = 'Copied!';
-                copyIcon.className = 'ph-bold ph-check text-sm text-emerald-600';
-                copyBtn.classList.add('bg-emerald-100');
+                copyIcon.className = 'ph-bold ph-check text-sm text-emerald-400';
+                copyBtn.classList.remove('bg-black');
+                copyBtn.classList.add('bg-neutral-800');
 
                 setTimeout(() => {
                     copyText.textContent = 'Copy';
                     copyIcon.className = 'ph-bold ph-copy text-sm';
-                    copyBtn.classList.remove('bg-emerald-100');
+                    copyBtn.classList.remove('bg-neutral-800');
+                    copyBtn.classList.add('bg-black');
                 }, 2200);
             }).catch(err => {
-                console.error('Failed to copy: ', err);
+                console.error('Failed to copy command: ', err);
             });
         }
-
-        // --------------------------------------------------------------------------
-        // 3. Interactive Habit Matrix Demo State
-        // --------------------------------------------------------------------------
-        const demoHabits = [
-            { id: 1, title: 'Deep Work (4 Hours)', icon: 'ph-brain', category: 'Focus', checks: [true, true, true, false, false, false, false] },
-            { id: 2, title: 'Morning Gym & Mobility', icon: 'ph-barbell', category: 'Health', checks: [true, true, false, true, false, false, false] },
-            { id: 3, title: 'Read 20 Pages', icon: 'ph-book-open', category: 'Mind', checks: [true, true, true, true, false, false, false] },
-            { id: 4, title: 'Cold Shower & Breathwork', icon: 'ph-drop', category: 'Health', checks: [true, false, true, false, false, false, false] },
-            { id: 5, title: 'Zero Sugar & Whole Foods', icon: 'ph-apple-logo', category: 'Nutrition', checks: [true, true, true, false, false, false, false] }
-        ];
-
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-        function renderDemo() {
-            const container = document.getElementById('demoRowsContainer');
-            if (!container) return;
-
-            let totalChecks = 0;
-            let possibleChecks = demoHabits.length * 7;
-
-            container.innerHTML = demoHabits.map((h, hIdx) => {
-                const checksCount = h.checks.filter(Boolean).length;
-                totalChecks += checksCount;
-
-                return `
-                    <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-300">
-                                <i class="ph-bold ${h.icon} text-sm"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-semibold text-white tracking-tight">${h.title}</h4>
-                                <span class="text-[10px] text-neutral-500 font-mono">${h.category} · ${checksCount}/7 done</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-1.5 sm:gap-2">
-                            ${h.checks.map((checked, dIdx) => `
-                                <button onclick="toggleDemoCheck(${hIdx}, ${dIdx})" title="${days[dIdx]}: Click to toggle"
-                                    class="w-8 h-8 rounded-lg border flex flex-col items-center justify-center transition-all cursor-pointer ${
-                                        checked 
-                                            ? 'bg-white border-white text-black font-bold shadow-sm' 
-                                            : 'bg-neutral-900/80 border-neutral-800 text-neutral-500 hover:border-neutral-700 hover:text-neutral-300'
-                                    }">
-                                    <span class="text-[8px] font-mono leading-none ${checked ? 'text-black' : 'text-neutral-500'}">${days[dIdx]}</span>
-                                    <span class="text-xs leading-none mt-0.5 ${checked ? 'animate-pop' : ''}">${checked ? '✔' : '·'}</span>
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            const scorePct = Math.round((totalChecks / possibleChecks) * 100);
-            document.getElementById('demoScoreDisplay').textContent = `Total: ${totalChecks}/${possibleChecks} (${scorePct}%)`;
-        }
-
-        function toggleDemoCheck(hIdx, dIdx) {
-            demoHabits[hIdx].checks[dIdx] = !demoHabits[hIdx].checks[dIdx];
-            renderDemo();
-        }
-
-        function resetDemoHabits() {
-            demoHabits[0].checks = [true, true, true, false, false, false, false];
-            demoHabits[1].checks = [true, true, false, true, false, false, false];
-            demoHabits[2].checks = [true, true, true, true, false, false, false];
-            demoHabits[3].checks = [true, false, true, false, false, false, false];
-            demoHabits[4].checks = [true, true, true, false, false, false, false];
-            renderDemo();
-        }
-
-        // Initialize live demo on load
-        document.addEventListener('DOMContentLoaded', () => {
-            renderDemo();
-        });
     </script>
 </body>
 </html>
