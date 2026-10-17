@@ -1,4 +1,3 @@
-
 <div align="center">
 
   <img src="assets/icon.png" width="96" height="96" alt="HabitFlow Logo" style="border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
