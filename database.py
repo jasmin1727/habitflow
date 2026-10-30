@@ -51,11 +51,29 @@ def init_db(db_path=None):
     );
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS notes (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        category TEXT NOT NULL DEFAULT 'Journal',
+        cover_style TEXT NOT NULL DEFAULT 'noir',
+        icon TEXT NOT NULL DEFAULT 'ph-book-bookmark',
+        content TEXT DEFAULT '',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
     # Check if empty, then seed defaults
     cursor.execute("SELECT COUNT(*) FROM habits")
     count = cursor.fetchone()[0]
     if count == 0:
         seed_defaults(conn)
+
+    cursor.execute("SELECT COUNT(*) FROM notes")
+    notes_count = cursor.fetchone()[0]
+    if notes_count == 0:
+        seed_default_notes(conn)
 
     conn.commit()
     conn.close()
@@ -103,6 +121,56 @@ def seed_defaults(conn):
 
     # Default theme
     cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('theme', 'dark')")
+
+
+def seed_default_notes(conn):
+    cursor = conn.cursor()
+    default_notes = [
+        (
+            'n_morning',
+            'Morning Clarity & Mindset',
+            'Journal',
+            'noir',
+            'ph-book-bookmark',
+            '### Morning Routine & Intentions\n\n- 10 minutes breathwork & cold water splash\n- Review today\'s priority: Keep momentum high and focus sharp\n- Habits target: 2.5L Water + 30m Zone-2 cardio\n\n> "We are what we repeatedly do. Excellence, then, is not an act, but a habit."',
+            '2026-10-24 07:30:00',
+            '2026-10-24 08:15:00'
+        ),
+        (
+            'n_deepwork',
+            'Deep Work Protocol & Systems',
+            'Deep Work',
+            'slate',
+            'ph-lightning',
+            '### High-Leverage Focus Rules\n\n1. Zero distractions: Phone placed in another room in silent mode.\n2. Work in 90-minute ultradian rhythm cycles.\n3. Single task focus: Close unnecessary browser tabs and notification popups.\n4. Log wins and velocity at the end of each session.',
+            '2026-10-23 11:00:00',
+            '2026-10-23 15:45:00'
+        ),
+        (
+            'n_reflection',
+            'Weekly Reflection & Wins',
+            'Reflection',
+            'bone',
+            'ph-brain',
+            '### Weekly Audit\n\n- **Total Streaks Completed:** 28 out of 30 target check-ins\n- **Physical Energy:** 4 cardio workouts completed with high energy\n- **Mindfulness:** Meditation streak hit 6 consecutive days\n- **Next Week Focus:** Wind down screen time 45 minutes prior to sleep.',
+            '2026-10-22 21:00:00',
+            '2026-10-22 21:30:00'
+        ),
+        (
+            'n_reading',
+            'Reading Notes: Atomic Habits',
+            'Ideas',
+            'midnight',
+            'ph-pencil-line',
+            '### Core Principles from James Clear\n\n- Habits are the compound interest of self-improvement.\n- You do not rise to the level of your goals, you fall to the level of your systems.\n- The 4 Laws: Make it obvious, attractive, easy, and satisfying.\n- Never miss twice: A bad day is an exception, not a pattern.',
+            '2026-10-21 19:20:00',
+            '2026-10-21 20:00:00'
+        )
+    ]
+    cursor.executemany("""
+    INSERT INTO notes (id, title, category, cover_style, icon, content, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, default_notes)
 
 
 def get_week_dates(reference_date=None):
@@ -378,7 +446,9 @@ def reset_to_demo_data(db_path=None):
     cursor = conn.cursor()
     cursor.execute("DELETE FROM habit_logs")
     cursor.execute("DELETE FROM habits")
+    cursor.execute("DELETE FROM notes")
     seed_defaults(conn)
+    seed_default_notes(conn)
     conn.commit()
     conn.close()
     return True
@@ -388,6 +458,98 @@ def save_setting(key, value, db_path=None):
     conn = get_db_connection(db_path)
     cursor = conn.cursor()
     cursor.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, str(value)))
+    conn.commit()
+    conn.close()
+    return True
+
+
+def get_notes(category=None, search=None, db_path=None):
+    conn = get_db_connection(db_path)
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM notes"
+    params = []
+    conditions = []
+
+    if category and category != 'All':
+        conditions.append("category = ?")
+        params.append(category)
+
+    if search and search.strip():
+        conditions.append("(title LIKE ? OR content LIKE ?)")
+        search_param = f"%{search.strip()}%"
+        params.append(search_param)
+        params.append(search_param)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    query += " ORDER BY updated_at DESC, created_at DESC"
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+
+    notes = []
+    for r in rows:
+        notes.append({
+            'id': r['id'],
+            'title': r['title'],
+            'category': r['category'],
+            'cover_style': r['cover_style'],
+            'icon': r['icon'],
+            'content': r['content'],
+            'created_at': r['created_at'],
+            'updated_at': r['updated_at']
+        })
+    conn.close()
+    return notes
+
+
+def add_note(title, category='Journal', cover_style='noir', icon='ph-book-bookmark', content='', db_path=None):
+    conn = get_db_connection(db_path)
+    cursor = conn.cursor()
+
+    note_id = f"note_{int(datetime.now().timestamp() * 1000)}"
+    now_iso = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    cursor.execute("""
+        INSERT INTO notes (id, title, category, cover_style, icon, content, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (note_id, title, category or 'Journal', cover_style or 'noir', icon or 'ph-book-bookmark', content or '', now_iso, now_iso))
+
+    conn.commit()
+    conn.close()
+    return {
+        'id': note_id,
+        'title': title,
+        'category': category or 'Journal',
+        'cover_style': cover_style or 'noir',
+        'icon': icon or 'ph-book-bookmark',
+        'content': content or '',
+        'created_at': now_iso,
+        'updated_at': now_iso
+    }
+
+
+def update_note(note_id, title, category='Journal', cover_style='noir', icon='ph-book-bookmark', content='', db_path=None):
+    conn = get_db_connection(db_path)
+    cursor = conn.cursor()
+    now_iso = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    cursor.execute("""
+        UPDATE notes 
+        SET title = ?, category = ?, cover_style = ?, icon = ?, content = ?, updated_at = ?
+        WHERE id = ?
+    """, (title, category or 'Journal', cover_style or 'noir', icon or 'ph-book-bookmark', content or '', now_iso, note_id))
+
+    conn.commit()
+    conn.close()
+    return True
+
+
+def delete_note(note_id, db_path=None):
+    conn = get_db_connection(db_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM notes WHERE id = ?", (note_id,))
     conn.commit()
     conn.close()
     return True
