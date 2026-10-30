@@ -161,39 +161,3 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 <!-- <div align="center">
   <p>Built with precision for Linux desktop users.</p>
  </div> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
