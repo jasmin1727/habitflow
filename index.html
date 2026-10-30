@@ -398,24 +398,69 @@
         </div>
     </main>
 
-    <!-- TAB 2: NOTES (Coming Soon Page) -->
-    <main id="tabContent-notes" class="tab-page hidden w-full px-6 lg:px-8 xl:px-12 pt-12 flex flex-col items-center justify-center min-h-[60vh]">
-        <div class="max-w-md w-full text-center bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-8 shadow-sm">
-            <div class="w-16 h-16 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-3xl mx-auto mb-4 text-neutral-800 dark:text-neutral-200">
-                <i class="ph ph-note-pencil"></i>
+    <!-- TAB 2: NOTES & DAILY REFLECTIONS (Book-Style Grid) -->
+    <main id="tabContent-notes" class="tab-page hidden w-full px-6 lg:px-8 xl:px-12 pt-6 space-y-6">
+        <!-- Top Action & Navigation Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200/80 dark:border-neutral-800">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h2 class="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                        <i class="ph-bold ph-books text-xl"></i>
+                        <span>Notebooks & Journals</span>
+                    </h2>
+                    <span id="notesCountBadge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+                        0 Notebooks
+                    </span>
+                </div>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                    Your tactile thought sanctuary, daily reflection scratchpad, and routine logs.
+                </p>
             </div>
-            <span class="text-[11px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900">Coming Soon</span>
-            <h2 class="text-xl font-bold tracking-tight mt-4">HabitFlow Notes</h2>
-            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 leading-relaxed">
-                A distraction-free markdown scratchpad for daily reflections, morning routines, and habit journal entries linked directly to your streaks.
+
+            <!-- Controls: Search bar + New Notebook Button -->
+            <div class="flex items-center gap-3">
+                <div class="relative w-full sm:w-64">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm pointer-events-none"></i>
+                    <input id="notesSearchInput" type="text" placeholder="Search notes..." oninput="handleNotesSearch(this.value)"
+                        class="w-full pl-9 pr-8 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-xs focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-all text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400">
+                    <button id="notesSearchClear" onclick="clearNotesSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 text-xs p-0.5 cursor-pointer">
+                        <i class="ph ph-x"></i>
+                    </button>
+                </div>
+
+                <button onclick="openCreateNoteModal()" class="flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 active:scale-[0.98] text-white dark:text-neutral-900 font-medium text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm shrink-0 cursor-pointer">
+                    <i class="ph-bold ph-plus text-sm"></i>
+                    <span>New Notebook</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Category Filter Bar -->
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="notesCategoryFilters">
+                <!-- Rendered dynamically via JS -->
+            </div>
+            <div class="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium" id="notesFilterStatus">
+                Showing all notes
+            </div>
+        </div>
+
+        <!-- BOOK STYLE GRID CONTAINER -->
+        <div id="notesBookGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pt-2">
+            <!-- Populated dynamically: Books + "Create New Notebook" Card -->
+        </div>
+
+        <!-- Empty State (Shown if search or filter yields 0) -->
+        <div id="notesEmptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-neutral-100 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/60 flex items-center justify-center text-3xl mb-4 text-neutral-400">
+                <i class="ph ph-book-open"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-neutral-800 dark:text-neutral-200">No notebooks found</h3>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1 max-w-xs">
+                Start a new journal, log your daily reflection, or clear your search filter.
             </p>
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
-                <span class="text-[10px] font-medium px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300">Daily Journal</span>
-                <span class="text-[10px] font-medium px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300">Markdown Editor</span>
-                <span class="text-[10px] font-medium px-2.5 py-1 rounded-md bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300">Local SQLite Storage</span>
-            </div>
-            <button onclick="switchTab('habits')" class="mt-6 w-full py-2.5 rounded-lg text-xs font-semibold bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-90 transition-opacity cursor-pointer">
-                Return to Habits
+            <button onclick="openCreateNoteModal()" class="mt-4 px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-90 cursor-pointer">
+                Create New Notebook
             </button>
         </div>
     </main>
@@ -584,6 +629,143 @@
         </div>
     </div>
 
+    <!-- 5. Create & Edit Notebook Modal -->
+    <div id="noteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800 shrink-0">
+                <div>
+                    <h3 id="noteModalHeading" class="font-bold text-base text-neutral-900 dark:text-neutral-100">Create New Notebook</h3>
+                    <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Customize your book cover and write your thoughts</p>
+                </div>
+                <button type="button" onclick="closeNoteModal()" class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer">
+                    <i class="ph ph-x text-base"></i>
+                </button>
+            </div>
+
+            <form id="noteForm" onsubmit="handleSaveNote(event)" class="mt-4 space-y-4 overflow-y-auto pr-1 flex-1">
+                <input type="hidden" id="noteEditId" value="">
+
+                <!-- Title -->
+                <div>
+                    <label class="block text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Notebook Title *</label>
+                    <input id="noteTitleInput" type="text" required maxlength="80" placeholder="e.g., Morning Focus & Mental Models"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 text-sm focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-colors text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400">
+                </div>
+
+                <!-- Category & Icon -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Category</label>
+                        <select id="noteCategoryInput" class="w-full px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 text-sm focus:outline-none focus:border-neutral-900 dark:focus:border-white text-neutral-900 dark:text-neutral-100">
+                            <option value="Journal" selected>Journal</option>
+                            <option value="Reflection">Reflection</option>
+                            <option value="Deep Work">Deep Work</option>
+                            <option value="Ideas">Ideas</option>
+                            <option value="Routines">Routines</option>
+                            <option value="Reading">Reading</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Spine Icon</label>
+                        <div id="noteIconPicker" class="grid grid-cols-6 gap-1.5">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cover Style Swatches -->
+                <div>
+                    <label class="block text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1.5">Cover Aesthetic</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2" id="noteCoverPicker">
+                        <!-- Populated dynamically: Noir, Slate, Bone, Midnight, Forest, Espresso -->
+                    </div>
+                </div>
+
+                <!-- Content / Scratchpad -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-[11px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Journal Content / Scratchpad</label>
+                        <span id="noteWordCount" class="text-[10px] text-neutral-400 font-medium">0 words</span>
+                    </div>
+                    <textarea id="noteContentInput" rows="7" placeholder="Write your thoughts, daily reflection, habits notes, or checklists here..." oninput="updateNoteWordCount(this.value)"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 text-sm font-sans focus:outline-none focus:border-neutral-900 dark:focus:border-white transition-colors resize-y leading-relaxed text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400"></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="pt-4 flex items-center justify-end gap-2 border-t border-neutral-100 dark:border-neutral-800 shrink-0">
+                    <button type="button" onclick="closeNoteModal()" class="px-4 py-2 rounded-lg text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer">Cancel</button>
+                    <button type="submit" id="noteSaveBtn" class="flex items-center gap-1.5 px-5 py-2 rounded-lg text-xs font-medium bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-90 cursor-pointer shadow-sm">
+                        <i class="ph-bold ph-floppy-disk text-sm"></i>
+                        <span>Save Notebook</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6. View & Read Notebook Modal (Tactile Reader) -->
+    <div id="viewNoteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl flex flex-col max-h-[88vh]">
+            <!-- Top Toolbar -->
+            <div class="flex items-center justify-between pb-4 border-b border-neutral-100 dark:border-neutral-800 shrink-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span id="viewNoteCategory" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+                        Journal
+                    </span>
+                    <span id="viewNoteDate" class="text-[11px] text-neutral-400 font-medium">
+                        Oct 24, 2026
+                    </span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button id="viewNoteEditBtn" onclick="editCurrentViewedNote()" title="Edit Note" class="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-xs font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1 cursor-pointer">
+                        <i class="ph ph-pencil-simple text-sm"></i>
+                        <span>Edit</span>
+                    </button>
+                    <button id="viewNoteDeleteBtn" onclick="deleteCurrentViewedNote()" title="Delete Note" class="p-1.5 rounded-lg border border-transparent hover:border-red-500/30 hover:bg-red-500/10 text-neutral-400 hover:text-red-500 transition-colors cursor-pointer">
+                        <i class="ph ph-trash text-sm"></i>
+                    </button>
+                    <button type="button" onclick="closeViewNoteModal()" class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-900 dark:hover:text-white cursor-pointer ml-1">
+                        <i class="ph ph-x text-base"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scrollable Reading Body -->
+            <div class="my-4 overflow-y-auto pr-2 flex-1 space-y-4">
+                <h2 id="viewNoteTitle" class="text-xl font-bold tracking-tight text-neutral-900 dark:text-white leading-tight">
+                    Notebook Title
+                </h2>
+                <div id="viewNoteBody" class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap font-sans">
+                    <!-- Note body text here -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-400 shrink-0">
+                <span id="viewNoteStats">0 words</span>
+                <button type="button" onclick="closeViewNoteModal()" class="px-4 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-medium cursor-pointer">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Delete Notebook Confirmation Modal -->
+    <div id="deleteNoteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl max-w-sm w-full p-6 shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-xl mx-auto mb-3">
+                <i class="ph ph-trash"></i>
+            </div>
+            <h4 class="font-semibold text-base text-neutral-900 dark:text-neutral-100">Delete Notebook?</h4>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">This will permanently delete this notebook and all its reflections from SQLite.</p>
+            <div class="mt-5 flex items-center justify-center gap-2">
+                <button type="button" onclick="closeDeleteNoteModal()" class="flex-1 py-2 rounded-lg text-xs font-medium border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 cursor-pointer">Cancel</button>
+                <button type="button" onclick="confirmDeleteNoteAction()" class="flex-1 py-2 rounded-lg text-xs font-medium bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-sm">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Banner -->
     <div id="toastBanner" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-4 py-2.5 rounded-lg shadow-lg flex items-center gap-2 text-xs font-medium">
         <i class="ph-bold ph-check text-sm"></i>
@@ -605,6 +787,110 @@
             'ph-pencil-line'
         ];
 
+        const NOTE_ICONS = [
+            'ph-book-bookmark',
+            'ph-notebook',
+            'ph-brain',
+            'ph-pencil-line',
+            'ph-lightning',
+            'ph-sparkle',
+            'ph-feather',
+            'ph-target',
+            'ph-moon',
+            'ph-lightbulb',
+            'ph-quotes',
+            'ph-books'
+        ];
+
+        const NOTE_CATEGORIES = ['All', 'Journal', 'Reflection', 'Deep Work', 'Ideas', 'Routines', 'Reading'];
+
+        const NOTE_COVERS = {
+            noir: {
+                id: 'noir',
+                name: 'Noir',
+                bg: 'bg-neutral-900 dark:bg-[#121214] text-neutral-100 border border-neutral-800 shadow-md',
+                spine: 'bg-neutral-950 dark:bg-black border-r border-neutral-800',
+                ribbon: 'bg-red-600',
+                badge: 'bg-neutral-800/90 text-neutral-300 border border-neutral-700/60',
+                iconBg: 'bg-neutral-800 text-neutral-200',
+                title: 'text-white font-semibold',
+                snippet: 'text-neutral-400',
+                border: 'border-neutral-800',
+                date: 'text-neutral-400',
+                swatchBg: 'bg-neutral-900 border-neutral-700'
+            },
+            slate: {
+                id: 'slate',
+                name: 'Slate',
+                bg: 'bg-[#22262e] text-slate-100 border border-slate-700/60 shadow-md',
+                spine: 'bg-[#181a20] border-r border-slate-700/50',
+                ribbon: 'bg-indigo-500',
+                badge: 'bg-slate-700/80 text-slate-200 border border-slate-600/50',
+                iconBg: 'bg-slate-700 text-slate-200',
+                title: 'text-white font-semibold',
+                snippet: 'text-slate-300/80',
+                border: 'border-slate-700/60',
+                date: 'text-slate-400',
+                swatchBg: 'bg-[#22262e] border-slate-600'
+            },
+            bone: {
+                id: 'bone',
+                name: 'Bone',
+                bg: 'bg-[#f6f5f0] dark:bg-[#1c1b18] text-stone-900 dark:text-stone-100 border border-stone-300 dark:border-stone-800 shadow-md',
+                spine: 'bg-[#e7e5dc] dark:bg-[#141311] border-r border-stone-300 dark:border-stone-800',
+                ribbon: 'bg-amber-700 dark:bg-amber-600',
+                badge: 'bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-300 dark:border-stone-700',
+                iconBg: 'bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-200',
+                title: 'text-stone-950 dark:text-white font-semibold',
+                snippet: 'text-stone-600 dark:text-stone-400',
+                border: 'border-stone-200 dark:border-stone-800',
+                date: 'text-stone-500 dark:text-stone-400',
+                swatchBg: 'bg-[#f6f5f0] text-stone-900 border-stone-300'
+            },
+            midnight: {
+                id: 'midnight',
+                name: 'Midnight',
+                bg: 'bg-[#111322] text-indigo-100 border border-indigo-950 shadow-md',
+                spine: 'bg-[#0a0b14] border-r border-indigo-900/40',
+                ribbon: 'bg-violet-500',
+                badge: 'bg-indigo-950 text-indigo-300 border border-indigo-900/50',
+                iconBg: 'bg-indigo-950 text-indigo-200',
+                title: 'text-white font-semibold',
+                snippet: 'text-indigo-200/70',
+                border: 'border-indigo-950',
+                date: 'text-indigo-300/70',
+                swatchBg: 'bg-[#111322] border-indigo-900'
+            },
+            forest: {
+                id: 'forest',
+                name: 'Forest',
+                bg: 'bg-[#112218] text-emerald-100 border border-emerald-900/60 shadow-md',
+                spine: 'bg-[#09140e] border-r border-emerald-900/40',
+                ribbon: 'bg-amber-500',
+                badge: 'bg-emerald-950 text-emerald-300 border border-emerald-900/50',
+                iconBg: 'bg-emerald-950 text-emerald-200',
+                title: 'text-white font-semibold',
+                snippet: 'text-emerald-200/70',
+                border: 'border-emerald-900/50',
+                date: 'text-emerald-300/70',
+                swatchBg: 'bg-[#112218] border-emerald-800'
+            },
+            espresso: {
+                id: 'espresso',
+                name: 'Espresso',
+                bg: 'bg-[#211814] text-amber-100 border border-amber-950/70 shadow-md',
+                spine: 'bg-[#140e0b] border-r border-amber-950/50',
+                ribbon: 'bg-orange-600',
+                badge: 'bg-amber-950 text-amber-300 border border-amber-900/50',
+                iconBg: 'bg-amber-950 text-amber-200',
+                title: 'text-white font-semibold',
+                snippet: 'text-amber-200/70',
+                border: 'border-amber-950/50',
+                date: 'text-amber-300/70',
+                swatchBg: 'bg-[#211814] border-amber-900'
+            }
+        };
+
         let state = {
             activeTab: 'habits',
             weekOffset: 0, // 0 = current week, -1 = previous, +1 = next
@@ -617,7 +903,15 @@
             selectedIcon: ICON_OPTIONS[0],
             kpis: {},
             chart: {},
-            settings: {}
+            settings: {},
+            // Notes state
+            notes: [],
+            activeNotesCategory: 'All',
+            notesSearchQuery: '',
+            selectedNoteCover: 'noir',
+            selectedNoteIcon: NOTE_ICONS[0],
+            currentViewedNoteId: null,
+            noteToDeleteId: null
         };
 
         let habitToDelete = null;
@@ -1241,6 +1535,505 @@
             if (activePage) {
                 activePage.classList.remove('hidden');
             }
+
+            if (tabName === 'notes') {
+                fetchNotes();
+            }
+        }
+
+        /* --- NOTES & NOTEBOOK LOGIC (Book-Style Grid) --- */
+
+        async function fetchNotes() {
+            const api = getApi();
+            if (api) {
+                try {
+                    const notes = await api.get_notes(state.activeNotesCategory, state.notesSearchQuery);
+                    state.notes = notes || [];
+                } catch (e) {
+                    console.error('Failed to fetch notes from SQLite:', e);
+                }
+            } else {
+                // Fallback demo notes if running without pywebview backend
+                if (!state.notes || state.notes.length === 0) {
+                    state.notes = [
+                        {
+                            id: 'n_morning',
+                            title: 'Morning Clarity & Mindset',
+                            category: 'Journal',
+                            cover_style: 'noir',
+                            icon: 'ph-book-bookmark',
+                            content: '### Morning Routine & Intentions\n\n- 10 minutes breathwork & cold water splash\n- Review today\'s priority: Keep momentum high and focus sharp\n- Habits target: 2.5L Water + 30m Zone-2 cardio\n\n> "We are what we repeatedly do. Excellence, then, is not an act, but a habit."',
+                            created_at: '2026-10-24 07:30:00',
+                            updated_at: '2026-10-24 08:15:00'
+                        },
+                        {
+                            id: 'n_deepwork',
+                            title: 'Deep Work Protocol & Systems',
+                            category: 'Deep Work',
+                            cover_style: 'slate',
+                            icon: 'ph-lightning',
+                            content: '### High-Leverage Focus Rules\n\n1. Zero distractions: Phone placed in another room in silent mode.\n2. Work in 90-minute ultradian rhythm cycles.\n3. Single task focus: Close unnecessary browser tabs and notifications.\n4. Log wins and velocity at the end of each session.',
+                            created_at: '2026-10-23 11:00:00',
+                            updated_at: '2026-10-23 15:45:00'
+                        },
+                        {
+                            id: 'n_reflection',
+                            title: 'Weekly Reflection & Wins',
+                            category: 'Reflection',
+                            cover_style: 'bone',
+                            icon: 'ph-brain',
+                            content: '### Weekly Audit\n\n- Total Streaks Completed: 28 out of 30 target check-ins\n- Physical Energy: 4 cardio workouts completed with high energy\n- Mindfulness: Meditation streak hit 6 consecutive days\n- Next Week Focus: Wind down screen time 45 minutes prior to sleep.',
+                            created_at: '2026-10-22 21:00:00',
+                            updated_at: '2026-10-22 21:30:00'
+                        },
+                        {
+                            id: 'n_reading',
+                            title: 'Reading Notes: Atomic Habits',
+                            category: 'Ideas',
+                            cover_style: 'midnight',
+                            icon: 'ph-pencil-line',
+                            content: '### Core Principles from James Clear\n\n- Habits are the compound interest of self-improvement.\n- You do not rise to the level of your goals, you fall to the level of your systems.\n- The 4 Laws: Make it obvious, attractive, easy, and satisfying.\n- Never miss twice: A bad day is an exception, not a pattern.',
+                            created_at: '2026-10-21 19:20:00',
+                            updated_at: '2026-10-21 20:00:00'
+                        }
+                    ];
+                }
+            }
+            renderNotes();
+        }
+
+        function countWords(str) {
+            if (!str) return 0;
+            const matches = str.trim().match(/\S+/g);
+            return matches ? matches.length : 0;
+        }
+
+        function formatNoteDate(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const d = new Date(dateStr.replace(' ', 'T'));
+                if (isNaN(d.getTime())) return dateStr.split(' ')[0] || dateStr;
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function stripMarkdown(md) {
+            if (!md) return '';
+            return md
+                .replace(/^#+\s+/gm, '')
+                .replace(/^>\s+/gm, '')
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/\*(.*?)\*/g, '$1')
+                .replace(/`([^`]+)`/g, '$1')
+                .replace(/[-*+]\s+/g, '• ')
+                .trim();
+        }
+
+        function renderNotes() {
+            // Render Categories
+            const catContainer = document.getElementById('notesCategoryFilters');
+            if (catContainer) {
+                catContainer.innerHTML = NOTE_CATEGORIES.map(cat => {
+                    const isActive = (state.activeNotesCategory === cat);
+                    const activeClasses = 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 border-neutral-900 dark:border-white shadow-xs';
+                    const inactiveClasses = 'bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-800 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200/60 dark:hover:bg-neutral-800';
+                    return `
+                        <button onclick="filterNotesByCategory('${cat}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap ${isActive ? activeClasses : inactiveClasses}">
+                            ${cat}
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            // Filter notes
+            let displayNotes = state.notes || [];
+            if (state.activeNotesCategory && state.activeNotesCategory !== 'All') {
+                displayNotes = displayNotes.filter(n => n.category === state.activeNotesCategory);
+            }
+            if (state.notesSearchQuery && state.notesSearchQuery.trim()) {
+                const q = state.notesSearchQuery.toLowerCase().trim();
+                displayNotes = displayNotes.filter(n => 
+                    (n.title && n.title.toLowerCase().includes(q)) || 
+                    (n.content && n.content.toLowerCase().includes(q))
+                );
+            }
+
+            // Update Count Badge & Status
+            const countBadge = document.getElementById('notesCountBadge');
+            if (countBadge) {
+                countBadge.textContent = `${displayNotes.length} Notebook${displayNotes.length === 1 ? '' : 's'}`;
+            }
+
+            const filterStatus = document.getElementById('notesFilterStatus');
+            if (filterStatus) {
+                if (state.notesSearchQuery) {
+                    filterStatus.textContent = `Search: "${state.notesSearchQuery}" (${displayNotes.length})`;
+                } else if (state.activeNotesCategory !== 'All') {
+                    filterStatus.textContent = `Category: ${state.activeNotesCategory} (${displayNotes.length})`;
+                } else {
+                    filterStatus.textContent = `All notebooks (${displayNotes.length})`;
+                }
+            }
+
+            const grid = document.getElementById('notesBookGrid');
+            const emptyState = document.getElementById('notesEmptyState');
+
+            if (!grid) return;
+
+            if (displayNotes.length === 0 && (state.notesSearchQuery || state.activeNotesCategory !== 'All')) {
+                grid.innerHTML = `
+                    <div onclick="openCreateNoteModal()" class="group relative flex flex-col items-center justify-center aspect-[1/1.35] min-h-[290px] rounded-r-2xl rounded-l-md border-2 border-dashed border-neutral-300 dark:border-neutral-700 hover:border-neutral-900 dark:hover:border-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-neutral-50/60 dark:bg-neutral-900/30 cursor-pointer p-6 text-center">
+                        <div class="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-xl text-neutral-600 dark:text-neutral-300 group-hover:scale-110 group-hover:bg-neutral-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-neutral-900 transition-all shadow-sm mb-3">
+                            <i class="ph-bold ph-plus"></i>
+                        </div>
+                        <h3 class="text-xs font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white">New Notebook</h3>
+                        <p class="text-[11px] text-neutral-400 mt-1 max-w-[140px] leading-relaxed">Create a fresh entry</p>
+                    </div>
+                `;
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
+            }
+
+            if (emptyState) emptyState.classList.add('hidden');
+
+            // Render "+ New Notebook" Card
+            const newCardHtml = `
+                <div onclick="openCreateNoteModal()" class="group relative flex flex-col items-center justify-center aspect-[1/1.35] min-h-[290px] rounded-r-2xl rounded-l-md border-2 border-dashed border-neutral-300 dark:border-neutral-700 hover:border-neutral-900 dark:hover:border-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-neutral-50/60 dark:bg-neutral-900/30 cursor-pointer p-6 text-center">
+                    <div class="absolute left-0 top-0 bottom-0 w-3.5 border-r border-dashed border-neutral-300 dark:border-neutral-700"></div>
+                    <div class="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-xl text-neutral-600 dark:text-neutral-300 group-hover:scale-110 group-hover:bg-neutral-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-neutral-900 transition-all shadow-sm mb-3">
+                        <i class="ph-bold ph-plus"></i>
+                    </div>
+                    <h3 class="text-xs font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white">New Notebook</h3>
+                    <p class="text-[11px] text-neutral-400 mt-1 max-w-[140px] leading-relaxed">Capture reflection, routine, or ideas</p>
+                </div>
+            `;
+
+            // Render Book Cards
+            const booksHtml = displayNotes.map(note => {
+                const cover = NOTE_COVERS[note.cover_style] || NOTE_COVERS.noir;
+                const dateText = formatNoteDate(note.updated_at || note.created_at);
+                const words = countWords(note.content);
+                const previewText = escapeHtml(stripMarkdown(note.content) || 'No notes added yet.');
+
+                return `
+                    <div onclick="openViewNoteModal('${note.id}')"
+                        class="group relative flex flex-col justify-between aspect-[1/1.35] min-h-[290px] rounded-r-2xl rounded-l-sm transition-all duration-300 ease-out hover:-translate-y-2 hover:rotate-[0.6deg] cursor-pointer shadow-md hover:shadow-2xl overflow-hidden ${cover.bg}">
+                        
+                        <!-- Spine Binding Effect on Left -->
+                        <div class="absolute left-0 top-0 bottom-0 w-6 z-20 flex flex-col justify-between py-4 items-center ${cover.spine}">
+                            <span class="w-1.5 h-1 rounded-full bg-white/20 dark:bg-white/10"></span>
+                            <span class="w-1 h-3 rounded-full bg-white/20 dark:bg-white/10"></span>
+                            <span class="w-1.5 h-1 rounded-full bg-white/20 dark:bg-white/10"></span>
+                        </div>
+
+                        <!-- Realistic Hanging Ribbon Bookmark -->
+                        <div class="absolute top-0 left-8 w-3.5 h-8 z-30 ${cover.ribbon} shadow-sm group-hover:h-9 transition-all duration-300">
+                            <div class="absolute bottom-[-5px] left-0 right-0 h-[6px] [clip-path:polygon(0%_0%,100%_0%,50%_100%)] bg-inherit"></div>
+                        </div>
+
+                        <!-- Right Edge Stacked Paper Effect -->
+                        <div class="absolute right-0 top-1.5 bottom-1.5 w-1.5 bg-neutral-200/90 dark:bg-neutral-700/80 rounded-r-sm z-10 border-l border-neutral-300 dark:border-neutral-800"></div>
+
+                        <!-- Book Cover Content -->
+                        <div class="relative z-10 pl-9 pr-4 py-5 flex flex-col h-full justify-between">
+                            <!-- Top: Category pill & Cover Icon -->
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${cover.badge}">
+                                    ${escapeHtml(note.category || 'Journal')}
+                                </span>
+                                <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs ${cover.iconBg}">
+                                    <i class="ph ${note.icon || 'ph-book-bookmark'}"></i>
+                                </div>
+                            </div>
+
+                            <!-- Center: Book Title & Snippet -->
+                            <div class="my-auto pt-2">
+                                <h3 class="font-bold text-sm tracking-tight leading-snug line-clamp-2 ${cover.title}">
+                                    ${escapeHtml(note.title)}
+                                </h3>
+                                <p class="text-[11px] leading-relaxed mt-2 line-clamp-3 ${cover.snippet}">
+                                    ${previewText}
+                                </p>
+                            </div>
+
+                            <!-- Bottom: Date & Footer Info + Quick Actions -->
+                            <div class="pt-3 border-t ${cover.border} flex items-center justify-between text-[10px]">
+                                <span class="${cover.date} font-medium">
+                                    ${dateText}
+                                </span>
+                                <div class="flex items-center gap-2">
+                                    <span class="${cover.date} font-medium">${words}w</span>
+                                    <button onclick="event.stopPropagation(); promptDeleteNote('${note.id}')" title="Delete Notebook" 
+                                        class="p-1 rounded text-neutral-400 hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer">
+                                        <i class="ph ph-trash text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            grid.innerHTML = newCardHtml + booksHtml;
+        }
+
+        /* --- NOTE CREATE & EDIT MODAL CONTROLS --- */
+
+        function renderNoteIconPicker() {
+            const picker = document.getElementById('noteIconPicker');
+            if (!picker) return;
+            picker.innerHTML = NOTE_ICONS.map(icon => {
+                const isSelected = (state.selectedNoteIcon === icon);
+                const activeStyle = 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 border-neutral-900 dark:border-white scale-105';
+                const inactiveStyle = 'bg-neutral-50 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-800';
+                return `
+                    <button type="button" onclick="selectNoteIcon('${icon}')" class="h-8 rounded-lg flex items-center justify-center text-sm border transition-all cursor-pointer ${isSelected ? activeStyle : inactiveStyle}">
+                        <i class="ph ${icon}"></i>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectNoteIcon(icon) {
+            state.selectedNoteIcon = icon;
+            renderNoteIconPicker();
+        }
+
+        function renderNoteCoverPicker() {
+            const picker = document.getElementById('noteCoverPicker');
+            if (!picker) return;
+            picker.innerHTML = Object.values(NOTE_COVERS).map(cover => {
+                const isSelected = (state.selectedNoteCover === cover.id);
+                return `
+                    <button type="button" onclick="selectNoteCover('${cover.id}')"
+                        class="p-2 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer text-center ${isSelected ? 'border-neutral-900 dark:border-white ring-2 ring-neutral-900/20 dark:ring-white/20 bg-neutral-100 dark:bg-neutral-800/80' : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/40'}">
+                        <div class="w-full h-8 rounded-md flex items-center justify-center shadow-xs border ${cover.swatchBg}">
+                            <span class="w-1.5 h-full border-r border-black/20 dark:border-white/20 mr-auto rounded-l-xs"></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-neutral-700 dark:text-neutral-300 truncate w-full">${cover.name}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectNoteCover(coverId) {
+            state.selectedNoteCover = coverId;
+            renderNoteCoverPicker();
+        }
+
+        function updateNoteWordCount(val) {
+            const wc = countWords(val);
+            const el = document.getElementById('noteWordCount');
+            if (el) el.textContent = `${wc} word${wc === 1 ? '' : 's'}`;
+        }
+
+        function openCreateNoteModal() {
+            document.getElementById('noteModalHeading').textContent = 'Create New Notebook';
+            document.getElementById('noteSaveBtn').innerHTML = '<i class="ph-bold ph-floppy-disk text-sm"></i><span>Create Notebook</span>';
+            document.getElementById('noteEditId').value = '';
+            document.getElementById('noteTitleInput').value = '';
+            document.getElementById('noteCategoryInput').value = 'Journal';
+            document.getElementById('noteContentInput').value = '';
+            state.selectedNoteCover = 'noir';
+            state.selectedNoteIcon = NOTE_ICONS[0];
+            updateNoteWordCount('');
+            renderNoteIconPicker();
+            renderNoteCoverPicker();
+
+            const modal = document.getElementById('noteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('noteTitleInput').focus(), 50);
+        }
+
+        function openEditNoteModal(noteId) {
+            const note = state.notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            document.getElementById('noteModalHeading').textContent = 'Edit Notebook';
+            document.getElementById('noteSaveBtn').innerHTML = '<i class="ph-bold ph-check text-sm"></i><span>Save Changes</span>';
+            document.getElementById('noteEditId').value = note.id;
+            document.getElementById('noteTitleInput').value = note.title;
+            document.getElementById('noteCategoryInput').value = note.category || 'Journal';
+            document.getElementById('noteContentInput').value = note.content || '';
+            state.selectedNoteCover = note.cover_style || 'noir';
+            state.selectedNoteIcon = note.icon || NOTE_ICONS[0];
+            updateNoteWordCount(note.content || '');
+            renderNoteIconPicker();
+            renderNoteCoverPicker();
+
+            const modal = document.getElementById('noteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('noteTitleInput').focus(), 50);
+        }
+
+        function closeNoteModal() {
+            const modal = document.getElementById('noteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function handleSaveNote(e) {
+            e.preventDefault();
+            const editId = document.getElementById('noteEditId').value;
+            const title = document.getElementById('noteTitleInput').value.trim();
+            const category = document.getElementById('noteCategoryInput').value;
+            const content = document.getElementById('noteContentInput').value;
+            const coverStyle = state.selectedNoteCover || 'noir';
+            const icon = state.selectedNoteIcon || 'ph-book-bookmark';
+
+            if (!title) return;
+
+            closeNoteModal();
+            const api = getApi();
+
+            if (editId) {
+                // Update note
+                if (api) {
+                    try {
+                        await api.update_note(editId, title, category, coverStyle, icon, content);
+                    } catch (err) {
+                        console.error('Failed to update note:', err);
+                    }
+                } else {
+                    const idx = state.notes.findIndex(n => n.id === editId);
+                    if (idx !== -1) {
+                        state.notes[idx] = {
+                            ...state.notes[idx],
+                            title, category, cover_style: coverStyle, icon, content,
+                            updated_at: new Date().toISOString()
+                        };
+                    }
+                }
+                showToast('Notebook updated');
+                // If view modal was open, refresh it
+                if (state.currentViewedNoteId === editId) {
+                    openViewNoteModal(editId);
+                }
+            } else {
+                // Create note
+                if (api) {
+                    try {
+                        await api.add_note(title, category, coverStyle, icon, content);
+                    } catch (err) {
+                        console.error('Failed to create note in SQLite:', err);
+                    }
+                } else {
+                    state.notes.unshift({
+                        id: 'note_' + Date.now(),
+                        title, category, cover_style: coverStyle, icon, content,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    });
+                }
+                showToast('Notebook created in SQLite');
+            }
+
+            await fetchNotes();
+        }
+
+        /* --- NOTE VIEW / READER MODAL --- */
+
+        function openViewNoteModal(noteId) {
+            const note = state.notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            state.currentViewedNoteId = note.id;
+            document.getElementById('viewNoteTitle').textContent = note.title;
+            document.getElementById('viewNoteCategory').textContent = note.category || 'Journal';
+            document.getElementById('viewNoteDate').textContent = formatNoteDate(note.updated_at || note.created_at);
+            document.getElementById('viewNoteStats').textContent = `${countWords(note.content)} words · ${note.category || 'Journal'}`;
+            document.getElementById('viewNoteBody').textContent = note.content || 'This notebook is currently empty.';
+
+            const modal = document.getElementById('viewNoteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeViewNoteModal() {
+            const modal = document.getElementById('viewNoteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            state.currentViewedNoteId = null;
+        }
+
+        function editCurrentViewedNote() {
+            if (!state.currentViewedNoteId) return;
+            const id = state.currentViewedNoteId;
+            closeViewNoteModal();
+            openEditNoteModal(id);
+        }
+
+        function deleteCurrentViewedNote() {
+            if (!state.currentViewedNoteId) return;
+            const id = state.currentViewedNoteId;
+            closeViewNoteModal();
+            promptDeleteNote(id);
+        }
+
+        /* --- NOTE DELETION --- */
+
+        function promptDeleteNote(noteId) {
+            state.noteToDeleteId = noteId;
+            const modal = document.getElementById('deleteNoteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteNoteModal() {
+            const modal = document.getElementById('deleteNoteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            state.noteToDeleteId = null;
+        }
+
+        async function confirmDeleteNoteAction() {
+            if (!state.noteToDeleteId) return;
+            const id = state.noteToDeleteId;
+            closeDeleteNoteModal();
+
+            const api = getApi();
+            if (api) {
+                try {
+                    await api.delete_note(id);
+                } catch (err) {
+                    console.error('Failed to delete note from SQLite:', err);
+                }
+            } else {
+                state.notes = state.notes.filter(n => n.id !== id);
+            }
+
+            showToast('Notebook deleted from SQLite');
+            await fetchNotes();
+        }
+
+        /* --- NOTE FILTER & SEARCH --- */
+
+        function filterNotesByCategory(cat) {
+            state.activeNotesCategory = cat;
+            fetchNotes();
+        }
+
+        function handleNotesSearch(query) {
+            state.notesSearchQuery = query;
+            const clearBtn = document.getElementById('notesSearchClear');
+            if (clearBtn) {
+                if (query && query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            }
+            renderNotes();
+        }
+
+        function clearNotesSearch() {
+            const input = document.getElementById('notesSearchInput');
+            if (input) input.value = '';
+            handleNotesSearch('');
         }
 
         /* --- DELETE LOGIC & MODALS --- */
@@ -1427,6 +2220,7 @@
                 try {
                     await api.reset_demo_data();
                     await fetchDashboardData();
+                    await fetchNotes();
                 } catch (e) {
                     console.error('Failed to reset SQLite data:', e);
                 }
@@ -1479,6 +2273,7 @@
         window.addEventListener('pywebviewready', () => {
             console.log('PyWebView backend ready. Fetching SQLite data...');
             fetchDashboardData();
+            fetchNotes();
         });
 
         // Fallback DOM load
@@ -1486,6 +2281,9 @@
             setTimeout(() => {
                 if (!state.habits || state.habits.length === 0) {
                     fetchDashboardData();
+                }
+                if (!state.notes || state.notes.length === 0) {
+                    fetchNotes();
                 }
             }, 100);
         });

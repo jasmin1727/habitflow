@@ -37,6 +37,18 @@ class HabitFlowAPI:
     def save_setting(self, key, value):
         return database.save_setting(key, value, self.db_path)
 
+    def get_notes(self, category=None, search=None):
+        return database.get_notes(category, search, self.db_path)
+
+    def add_note(self, title, category="Journal", cover_style="noir", icon="ph-book-bookmark", content=""):
+        return database.add_note(title, category, cover_style, icon, content, self.db_path)
+
+    def update_note(self, note_id, title, category="Journal", cover_style="noir", icon="ph-book-bookmark", content=""):
+        return database.update_note(note_id, title, category, cover_style, icon, content, self.db_path)
+
+    def delete_note(self, note_id):
+        return database.delete_note(note_id, self.db_path)
+
 
 def main():
     api = HabitFlowAPI()
